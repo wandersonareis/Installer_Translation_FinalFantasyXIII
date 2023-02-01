@@ -1,0 +1,58 @@
+﻿@using Installer.Common.Framework
+<div style="display: @DisplayClassLoading">
+    <MudOverlay Absolute="true" Visible="@LoadingConfiguration.IsLoading"></MudOverlay>
+    <div class="font-bold text-blue-500">
+        <span class="relative font-sans text-sm uppercase overflow-hidden">
+            @LoadingConfiguration.Title
+        </span>
+    </div>
+    <MudProgressLinear Class="mt-0" Color="Color.Primary" 
+                       Value="@LoadingConfiguration.CurrentStep"
+                       Indeterminate="@LoadingConfiguration.IsIndeterminate"
+                       Max="@LoadingConfiguration.TotalSteps"
+                       Size="Size.Large">
+        <MudText Typo="Typo.subtitle1" Class="text-blue-800">
+            @LoadingConfiguration.GetPercentage()%
+        </MudText>
+    </MudProgressLinear>
+</div>
+
+<div style="display: @DisplayClassChildContent">
+    <CascadingValue Value="@LoadingConfiguration">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    private LoadingHandler LoadingConfiguration { get; set; } = new();
+
+    private string DisplayClassLoading => LoadingConfiguration.IsLoading ? "initial" : "none";
+    private string DisplayClassChildContent => LoadingConfiguration.IsLoading ? "none" : "initial";
+
+    protected override void OnParametersSet()
+    {
+        LoadingConfiguration.PropertyChanged += (_, _) => StateHasChanged();
+    }
+}
+
+<style>
+    .loading-title {
+        background: linear-gradient(90deg, #000, #fff, #000) no-repeat;
+        background-size: 80%;
+        animation: animate 3s linear infinite;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: rgba(255, 255, 255, 0);
+    }
+    
+    @@keyframes animate {
+        0% {
+            background-position: -500%;
+        }
+        100% {
+            background-position: 500%;
+        }
+    }
+</style>

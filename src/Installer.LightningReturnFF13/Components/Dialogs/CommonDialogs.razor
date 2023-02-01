@@ -1,0 +1,40 @@
+﻿<MudPaper>
+    <MudDialog Style="color:red; background-color:rgb(30 41 59);" ClassActions="bg-slate-800 text-blue-500" ClassContent="d-flex justify-center align-content-center bg-slate-800 text-blue-500">
+        <DialogContent>
+            <MudText>@ContentText</MudText>
+        </DialogContent>
+        <DialogActions>
+            @if (ButtonCancel)
+            {
+                <button @onclick="Cancel" class="btn-cancel">
+                    <span>
+                        Cancelar
+                    </span>
+                </button>
+            }
+
+            <button @onclick="Submit" class="btn-ok">
+                <span>
+                    @ButtonText
+                </span>
+            </button>
+        </DialogActions>
+    </MudDialog>
+</MudPaper>
+
+@code {
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter] public MarkupString ContentText { get; set; }
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Ok";
+
+    [Parameter]
+    public bool ButtonCancel { get; set; } = true;
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+}

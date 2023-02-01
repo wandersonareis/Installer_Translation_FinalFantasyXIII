@@ -1,0 +1,37 @@
+﻿@using Installer.LightningReturnFF13.Shared.Interfaces
+@using Installer.Common.GameLocation
+@using Installer.Common.Service
+@inject InstallerServiceProvider InstallerServiceProvider
+@inject IFolderBrowserService FolderBrowserService
+
+<MudDialog ClassContent="bg-slate-800 text-blue-400" ClassActions="bg-slate-800">
+    <DialogContent>
+        <MudTextField AdornmentColor="Color.Primary" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.FolderOpen" Label="Local do jogo" OnAdornmentClick="ChangeFolder" ReadOnly="true" Value="GameLocation"/>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Close">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    private string GameLocation => InstallerServiceProvider.GameLocationInfo.RootDirectory;
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    //todo: implementar validação no próprio input
+    public void ChangeFolder()
+    {
+        string path = FolderBrowserService.DisplayFolderPicker();
+        if (string.IsNullOrEmpty(path)) return;
+        IGameLocationInfo result = new GameLocationInfo(path);
+        result.Validate();
+
+        InstallerServiceProvider.GameLocationInfo = result;
+    }
+}

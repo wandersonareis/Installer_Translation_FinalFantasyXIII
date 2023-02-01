@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net7.0-windows7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<IsShippingPackage>false</IsShippingPackage>
+		<StartupObject>Installer.LightningReturnFF13.Program</StartupObject>
+		<AssemblyName>LightningReturnFF13_pt-Br</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="StaticFiles\**" />
+		<Content Remove="StaticFiles\**" />
+		<EmbeddedResource Remove="StaticFiles\**" />
+		<None Remove="StaticFiles\**" />
+		<None Remove="StaticsFiles\_content\MudBlazor\MudBlazor.min.css" />
+		<EmbeddedResource Include="StaticsFiles\_content\MudBlazor\MudBlazor.min.css" />
+		<None Remove="StaticsFiles\_content\MudBlazor\MudBlazor.min.js" />
+		<EmbeddedResource Include="StaticsFiles\_content\MudBlazor\MudBlazor.min.js" />
+		<Content Remove="StaticsFiles\package.json" />
+		<None Include="StaticsFiles\package.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+		<Content Remove="wwwroot\css\app.min.css" />
+		<EmbeddedResource Include="wwwroot\css\app.min.css" />
+		<None Remove="Components\Dialogs\Loading.razor.css" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Remove="wwwroot\images\first.webp" />
+		<Content Remove="wwwroot\images\five.webp" />
+		<Content Remove="wwwroot\images\four.webp" />
+		<Content Remove="wwwroot\images\lightning_effect.webp" />
+		<Content Remove="wwwroot\images\Lightning_Returns_Final_Fantasy_XIII_Logo.webp" />
+		<Content Remove="wwwroot\images\third.webp" />
+		<Content Remove="wwwroot\images\two.webp" />
+		<Content Remove="wwwroot\index.html" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="wwwroot\images\first.webp" />
+		<EmbeddedResource Include="wwwroot\images\five.webp" />
+		<EmbeddedResource Include="wwwroot\images\four.webp" />
+		<EmbeddedResource Include="wwwroot\images\lightning_effect.webp" />
+		<EmbeddedResource Include="wwwroot\images\Lightning_Returns_Final_Fantasy_XIII_Logo.webp" />
+		<EmbeddedResource Include="wwwroot\images\third.webp" />
+		<EmbeddedResource Include="wwwroot\images\two.webp" />
+		<EmbeddedResource Include="wwwroot\index.html" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="7.0.58" />
+		<PackageReference Include="MudBlazor" Version="6.1.8" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="Properties\" />
+		<Folder Include="wwwroot\css" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Game.Injector\Game.Injector.csproj" />
+		<ProjectReference Include="..\Installer.Common\Installer.Common.csproj" />
+		<ProjectReference Include="..\Installer.Package\Installer.Package.csproj" />
+	</ItemGroup>
+
+</Project>

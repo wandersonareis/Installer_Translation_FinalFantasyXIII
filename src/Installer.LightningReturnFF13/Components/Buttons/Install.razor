@@ -1,0 +1,83 @@
+﻿@using Shared.Interfaces
+@using Components.Dialogs
+@using Installer.Package
+@using Installer.Common.Framework
+@using Installer.Common.Framework.Extensions
+@using Installer.Common.Localizations
+@using Installer.Common.Service
+@inject InstallerServiceProvider InstallerServiceProvider
+@inject ITranslationIntaller Installer
+@inject IPackageInfo PackageInfo
+@inject IDialogService DialogService
+
+<li @onmouseover="HandleMouseover" @onmouseleave="HandleMouseleave" @onclick="HandlerClickTask">@Localization.Instance.BtnInstall</li>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnMouseover { get; set; }
+    [Parameter]
+    public EventCallback<string> OnMouseLeave { get; set; }
+    [CascadingParameter]
+    public LoadingHandler LoadingConfiguration { get; set; } = default!;
+
+    private void HandleMouseover()
+    {
+        OnMouseover.InvokeAsync(arg: string.Empty);
+    }
+    private void HandleMouseleave()
+    {
+        OnMouseover.InvokeAsync(arg: string.Empty);
+    }
+
+    private async Task HandlerClickTask()
+    {
+        DialogOptions options;
+
+        try
+        {
+            PackageInfo.Validate();
+            InstallerServiceProvider.GameLocationInfo.Validate();
+
+            string totalSizeSuffix = InstallerServiceProvider.GameLocationInfo.IsValidGamePath() ? Path.GetPathRoot(path: InstallerServiceProvider.GameLocationInfo.RootDirectory).GetDriveFreeSpace().SizeSuffix() : string.Empty;
+            string freeSpaceMessage = string.Format(format: Localization.Instance.FreeSpace, arg0: totalSizeSuffix);
+
+            options = new DialogOptions
+                {
+                    MaxWidth = MaxWidth.Small
+                };
+
+            DialogResult result = await ShowModal(contextText: freeSpaceMessage, options, buttonText: "Instalar", cancelButton: true);
+
+            if (!result.Canceled)
+            {
+                await Installer.Install(progress: LoadingConfiguration);
+
+                await ShowModal(Localization.Instance.InstallTranslationComplete);
+            }
+        }
+        catch (Exception e)
+        {
+            options = new DialogOptions
+                {
+                    CloseButton = false,
+                    MaxWidth = MaxWidth.Large,
+                    NoHeader = false
+                };
+
+            await ShowModal(contextText: e.Message, options: options, title: e.GetType().Name);
+        }
+    }
+
+    private async Task<DialogResult> ShowModal(string contextText, DialogOptions options = default!, string title = "", string buttonText = "Ok", bool cancelButton = false)
+    {
+        var parameters = new DialogParameters
+        {
+            { "ContentText", (MarkupString)contextText},
+            { "ButtonCancel", cancelButton },
+            { "ButtonText", buttonText }
+        };
+
+        IDialogReference? dialog = await DialogService.ShowAsync<CommonDialogs>(title: title, parameters: parameters, options: options);
+        return await dialog.Result;
+    }
+}

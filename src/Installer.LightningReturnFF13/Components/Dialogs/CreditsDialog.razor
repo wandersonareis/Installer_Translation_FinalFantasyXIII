@@ -1,0 +1,49 @@
+﻿<MudDialog ClassActions="bg-slate-800" ClassContent="container flex flex-col w-full justify-center items-center bg-slate-800">
+    <DialogContent>
+        <div class="container flex flex-col w-max justify-center items-center text-white">
+            <h3 class="font-bold text-title-blue mt-5">
+                Administrador
+            </h3>
+            <p>
+                Rhadamants
+            </p>
+            <h3 class="font-bold text-title-blue mt-5">
+                Co-Administradora / Revisora
+            </h3>
+            <p>Zexia</p>
+            <h3 class="text-title-blue mt-5">
+                Tradutores
+            </h3>
+            <div class="flex w-full justify-between">
+                <p>Airtonj3</p>
+                <p>GStrifeX</p>
+            </div>
+            <div class="flex w-full justify-between">
+                <p>HicaroJr</p>
+                <p>Jnt_ntl</p>
+            </div>
+            <div class="flex w-full justify-between">
+                <p>Kimihir0</p>
+                <p>Leo_14_jti</p>
+            </div>
+            <div class="flex w-full justify-between">
+                <p>Snice</p>
+                <p>TheCrazeey</p>
+            </div>
+            <div class="flex w-full justify-between">
+                <p>Vigaku</p>
+                <p>Zadock</p>
+            </div>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <button @onclick="Submit" class="relative inline-flex items-center justify-center p-0.2 mb-1 mr-1 overflow-hidden text-sm font-medium text-blue-500 hover:text-white dark:text-white">
+                Ok
+        </button>
+    </DialogActions>
+</MudDialog>
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
+
+    void Submit() => MudDialog.Close();
+}

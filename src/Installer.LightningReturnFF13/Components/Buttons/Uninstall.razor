@@ -1,0 +1,70 @@
+﻿@using Installer.LightningReturnFF13.Shared.Interfaces
+@using Installer.Common.Logger
+@using Installer.Common.Localizations
+@using Installer.Common.Service
+@using Installer.LightningReturnFF13.Components.Dialogs
+@inject InstallerServiceProvider InstallerServiceProvider
+@inject IDialogService DialogService
+@inject IUninstallerProvider Uninstaller
+
+<li @onmouseover="HandleMouseover" @onmouseleave="HandleMouseleave" @onclick="HandleClickTask">@Localization.Instance.BtnUnistall</li>
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnMouseover { get; set; }
+    [Parameter]
+    public EventCallback<string> OnMouseLeave { get; set; }
+
+    //private readonly InstallerServiceProvider _helperServices = InstallerServiceProvider.GetInstance();
+    private readonly ILogger _logger = LogManager.GetLogger();
+
+    private void HandleMouseover()
+    {
+        OnMouseover.InvokeAsync(string.Empty);
+    }
+    private void HandleMouseleave()
+    {
+        OnMouseover.InvokeAsync(string.Empty);
+    }
+
+    private async Task HandleClickTask()
+    {
+        InstallerServiceProvider.GameLocationInfo.Validate();
+
+        var parameters = new DialogParameters
+        {
+            { "ContentText", (MarkupString)Localization.Instance.UninstallConfirm },
+            { "ButtonText", "Desinstalar" }
+        };
+
+        IDialogReference? dialog = await DialogService.ShowAsync<CommonDialogs>("Confirm", parameters);
+        DialogResult? result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            try
+            {
+                await Uninstaller.TranslationUninstall();
+                _logger.Info(Localization.Instance.UninstallComplete);
+            }
+            catch (Exception e)
+            {
+                var errorParameters = new DialogParameters
+                {
+                    { "ContentText", (MarkupString)e.Message },
+                    { "ButtonCancel", false }
+                };
+
+                var errorOptions = new DialogOptions
+                    {
+                        CloseButton = false,
+                        MaxWidth = MaxWidth.Large,
+                        NoHeader = false
+                    };
+                await DialogService.ShowAsync<CommonDialogs>(e.GetType().Name, errorParameters, errorOptions);
+            }
+        }
+    }
+
+
+}

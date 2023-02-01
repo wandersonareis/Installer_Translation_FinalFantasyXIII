@@ -1,0 +1,40 @@
+﻿<link href="css/letterFlip.css" rel="stylesheet">
+
+
+<button class="btn-grad" @onclick="HandleClick">
+    @Text
+</button>
+
+@code {
+    [Parameter]
+    public string Text { get; set; }
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    private async Task HandleClick()
+    {
+        await OnClick.InvokeAsync(null);
+    }
+}
+
+<style>
+    .btn-grad {
+        background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
+        margin: 10px;
+        padding: 15px 45px;
+        text-align: center;
+        text-transform: uppercase;
+        transition: 0.5s;
+        background-size: 200% auto;
+        color: white;
+        box-shadow: 0 0 20px #eee;
+        border-radius: 10px;
+        display: block;
+    }
+
+    .btn-grad:hover {
+        background-position: right center; /* change the direction of the change here */
+        color: #fff;
+        text-decoration: none;
+    }
+</style>

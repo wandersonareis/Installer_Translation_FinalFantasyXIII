@@ -1,0 +1,114 @@
+﻿@using Installer.Package
+@using Installer.Common.Framework.Extensions
+@using Installer.Common.Localizations
+@using Installer.Common.Models
+@using Installer.LightningReturnFF13.Components.Dialogs
+@using Installer.Common.Abstract
+@using Installer.Common.Service
+@inject InstallerServiceProvider InstallerServiceProvider
+@inject IDialogService DialogService
+@inject IPackageInfo PackageInfo
+
+
+<li @onmouseover="HandleMouseover" @onmouseleave="HandleMouseleave" @onclick="Confirm">@Localization.Instance.BtnUpdate</li>
+
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnMouseover { get; set; }
+    [Parameter]
+    public EventCallback<string> OnMouseLeave { get; set; }
+
+    //private static readonly InstallerServiceProvider HelperServices = InstallerServiceProvider.GetInstance();
+
+    private void HandleMouseover()
+    {
+        OnMouseover.InvokeAsync(string.Empty);
+    }
+    private void HandleMouseleave()
+    {
+        OnMouseover.InvokeAsync(string.Empty);
+    }
+
+    private async Task Confirm()
+    {
+        try
+        {
+            (string translationId, string appVersion) = await InstallerServiceProvider.GetServerData();
+
+            bool newAppVersion = InstallerServiceProvider.CheckAppVersion(appVersion);
+            string localPackageDate = Localization.Instance.TranslationLocalDate + InstallerServiceProvider.InstallerConfig.TranslationId.ConvertFromUnixTimestamp();
+            string serverPackageDate = Localization.Instance.TranslationFromServerDate + translationId.ConvertFromUnixTimestamp();
+            string appVersionMessage = Localization.Instance.AppVersion + appVersion;
+
+            var parameters = new DialogParameters
+        {
+            { "NewAppVersion", newAppVersion },
+            { "AppVersion", (MarkupString)appVersionMessage },
+            { "ServerPackageDate", (MarkupString)localPackageDate },
+            { "LocalPackageDate", (MarkupString)serverPackageDate },
+            { "ButtonText", "Instalar" },
+            { "Color", Color.Success }
+        };
+
+            IDialogReference? dialog = await DialogService.ShowAsync<UpdateDialog>("Confirm", parameters);
+            DialogResult? result = await dialog.Result;
+
+            if (result.Canceled) return;
+
+
+            await TranslationUpdate();
+        }
+        catch (Exception e)
+        {
+            var errorParameters = new DialogParameters
+            {
+                { "ContentText", (MarkupString)e.Message },
+                { "ButtonCancel", false }
+            };
+
+            var errorOptions = new DialogOptions
+                {
+                    CloseButton = false,
+                    MaxWidth = MaxWidth.Large,
+                    NoHeader = false
+                };
+            await DialogService.ShowAsync<CommonDialogs>(e.GetType().Name, errorParameters, errorOptions);
+        }
+    }
+
+    private async Task TranslationUpdate()
+    {
+        JsonData jsonData = await InstallerServiceProvider.GetServerData();
+        string translationUpdateMessage =
+            string.IsNullOrEmpty(jsonData.PackageChangelog) ?
+                Localization.Instance.TranslationUpdateMessage : $"{Localization.Instance.TranslationUpdateMessage}\n\nAté agora:\n{jsonData.PackageChangelog}";
+
+        if (!InstallerServiceProvider.CheckAppVersion(jsonData.AppVersion))
+        {
+            bool? result = await DialogService.ShowMessageBox(
+                InstallerBase.MessageTitle,
+                Localization.Instance.UpdateAppMessage,
+                yesText: "Atualizar Instalador", cancelText: "Cancelar");
+
+            if (result == true)
+            {
+                //await HelperServices.CheckApp(jsonData);
+                return;
+            }
+        }
+
+        if (!PackageInfo.IsValid(jsonData))
+        {
+            bool? result = await DialogService.ShowMessageBox(
+                InstallerBase.MessageTitle,
+                translationUpdateMessage,
+                yesText: "Atualizar pacote", cancelText: "Cancelar");
+
+            if (result == true)
+            {
+                await PackageInfo.GetPackageTranslation();
+            }
+        }
+    }
+}

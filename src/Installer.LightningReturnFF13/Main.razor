@@ -1,0 +1,191 @@
+﻿@using MudBlazor.Utilities
+@using Installer.Package
+@using Installer.Common.Logger
+@using Installer.Common.Localizations
+@using Installer.Common.Models
+@using Installer.LightningReturnFF13.Components.Dialogs
+@using Installer.LightningReturnFF13.Components.Buttons
+@using Installer.Common.GameLocation
+@using Installer.Common.Service
+@inject IInfoProvider GameLocationProvider
+@inject IPackageInfo PackageInfo
+@inject InstallerServiceProvider InstallerServiceProvider
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<MudDialogProvider FullWidth="true"
+                   MaxWidth="MaxWidth.ExtraSmall"
+                   CloseButton="true"
+                   DisableBackdropClick="true"
+                   NoHeader="true"
+                   Position="DialogPosition.Center"
+                   CloseOnEscapeKey="true"/>
+<MudThemeProvider IsDarkMode="true" Theme="_lightningReturnTheme"/>
+<MudSnackbarProvider/>
+
+<MudContainer Style="all: unset;">
+    <MudImage Fluid="true" ObjectFit="ObjectFit.Cover" src="images\Lightning_Returns_Final_Fantasy_XIII_Logo.webp" alt=""/>
+    <MudImage Class="sprite" Fluid="true" ObjectFit="ObjectFit.Cover" src="@SpriteImage" alt="Sprite"/>
+    <MudToolBar Class="absolute top-px right-0 bg-transparent">
+        <MudIconButton Icon="@Icons.Material.Outlined.Settings" Color="Color.Inherit" OnClick="ShowConfigDialog"/>
+        <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="ShowCreditsDialog"/>
+    </MudToolBar>
+    <div class="container absolute bottom-4 left-7 text-blue-400/30 menu-list">
+        <Loading>
+            <Install OnMouseover="() => ChangeImage(_spriteList[0])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Install>
+        </Loading>
+        <Update OnMouseover="() => ChangeImage(_spriteList[1])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Update>
+        <Uninstall OnMouseover="() => ChangeImage(_spriteList[2])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Uninstall>
+    </div>
+</MudContainer>
+
+@code {
+    private readonly ILogger _logger = LogManager.GetLogger();
+
+    private string SpriteImage { get; set; } = "images/five.webp";
+
+    private readonly IList<string> _spriteList = new List<string>(5)
+    { "images/first.webp", "images/two.webp", "images/third.webp", "images/four.webp", "images/five.webp" };
+
+    private void ChangeImage(string sprite)
+    {
+        SpriteImage = sprite;
+        StateHasChanged();
+    }
+
+    private async Task ShowConfigDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true, DisableBackdropClick = true, MaxWidth = MaxWidth.Medium };
+        await DialogService.ShowAsync<ConfigDialog>("Configurações", options);
+    }
+
+    private async Task ShowCreditsDialog()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            DisableBackdropClick = true
+        };
+        await DialogService.ShowAsync<CreditsDialog>("Dialog", options);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await GetTranslationPackageUpdate();
+    //await GetApplicationUpdate();
+            if (GameLocationProvider.Provider()) return;
+
+            InstallerServiceProvider.GameLocationInfo = new GameLocationInfo("");
+        }
+        catch (HttpRequestException httpRequestException)
+        {
+            //todo: permitir instalação da tradução apenas pelo pacote quando houver erro da api
+            _logger.Error(httpRequestException, Localization.Instance.WriteFailed);
+
+            var options = new DialogOptions
+            {
+                NoHeader = false,
+                MaxWidth = MaxWidth.Large
+            };
+
+            await DialogService.ShowMessageBox(
+                httpRequestException.GetType().Name,
+                Localization.Instance.HttpRequestBroken,
+                yesText: "Ok!", options: options);
+        }
+        catch (UnauthorizedAccessException accessException)
+        {
+            _logger.Error(accessException, Localization.Instance.WriteFailed);
+
+            await DialogService.ShowMessageBox(
+                accessException.GetType().Name,
+                accessException.Message,
+                yesText: "Ok!");
+        }
+        catch (Exception err)
+        {
+            _logger.Error(err, err.GetType().Name);
+
+            await DialogService.ShowMessageBox(
+                err.GetType().Name,
+                err.Message,
+                yesText: "Ok!");
+        }
+    }
+
+    private async Task GetTranslationPackageUpdate()
+    {
+        JsonData jsonFromServer = await InstallerServiceProvider.GetServerData();
+
+        if (PackageInfo.IsValid(jsonFromServer)) return;
+
+        Snackbar.Add(Localization.Instance.TranslationUpdateMessageSnack, Severity.Info, config =>
+        {
+            config.RequireInteraction = true;
+            config.ShowCloseIcon = true;
+            config.Onclick = async snackbar => { await PackageInfo.GetPackageTranslation(); };
+        });
+    }
+
+    //todo: Encontrar outro modo de distribuir atualizações do instalador
+    // private async Task GetApplicationUpdate()
+    // {
+    //     JsonData jsonFromServer = await _helperServices.GetServerData();
+    //     bool app = _helperServices.CheckAppVersion(jsonFromServer.AppVersion);
+    //     if (_helperServices.CheckAppVersion(jsonFromServer.AppVersion)) return;
+    //
+    //     Snackbar.Add(Localization.Instance.UpdateAppMessageSnack, Severity.Info, config =>
+    //         {
+    //             config.RequireInteraction = true;
+    //             config.ShowCloseIcon = true;
+    //             config.Onclick = async snackbar =>
+    //             {
+    //                 await _helperServices.CheckApp(jsonFromServer);
+    //             };
+    //         });
+    // }
+
+    readonly MudTheme _lightningReturnTheme = new()
+    {
+        PaletteDark = new PaletteDark
+        {
+            Primary = (MudColor)"#3b82f6",
+            Background = (MudColor)"#0F172A",
+            TextPrimary = (MudColor)"#3b82f6",
+        }
+    };
+}
+
+<style>
+    .sprite {
+        max-height: 170px;
+    }
+
+    .menu-list {
+        display: block;
+        width: 100%;
+        font-size: 1.2rem;
+        text-shadow: 2px 2px 5px rgba(59, 130, 246, 0.4);
+    }
+
+        .menu-list li {
+            display: inline-block;
+            width: 100%;
+            list-style: none;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: .6px;
+            line-height: 1.25em;
+            background-image: url("images/lightning_effect.webp");
+            -webkit-background-clip: text;
+            background-size: 50%;
+            background-repeat: repeat-x;
+        }
+
+            .menu-list li:hover {
+                font-size: 130%;
+                transition: all 0.2s;
+            }
+</style>
