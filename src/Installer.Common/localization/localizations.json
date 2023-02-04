@@ -1,0 +1,85 @@
+﻿{
+  "ar": {
+    "InvalidInput": "إدخال غير صالح",
+    "UnknownError": "خطأ غير معروف {0}",
+    "home-page": {
+      "title": "أهلا بك",
+      "body": {
+        "text": "بعض النصوص"
+      }
+    }
+  },
+  "de": {
+    "InvalidInput": "Ungültige Eingabe",
+    "UnknownError": "Unbekannter Fehler {0}",
+    "home-page": {
+      "title": "Willkommen",
+      "body": {
+        "text": "Etwas Text"
+      }
+    }
+  },
+  "en": {
+    "InvalidInput": "Invalid input",
+    "UnknownError": "Unknown error {0}",
+    "home-page": {
+      "title": "Welcome",
+      "body": {
+        "text": "Some text"
+      }
+    }
+  },
+  "pt": {
+    "InvalidInput": "Entrada inválida",
+    "UnknownError": "Error desconhecido {0}",
+    "home-page": {
+      "title": "Welcome",
+      "body": {
+        "buttons": {
+          "install": "Instalar tradução",
+          "update": "Atualizar tradução",
+          "uninstall": "Desinstalar tradução"
+        },
+        "MessageBoxButtons": {
+          "TranslationUpdateYesText": "Atualizar pacote",
+          "TranslationUpdateCancelText": "Cancelar"
+        }
+      }
+    },
+    "Messages": {
+      "DateFromLocalTranslationText": "Data da tradução atual: ",
+      "DateFromServerTranslationText": "Data da tradução no servidor: ",
+      "ExtractingPackageFiles": "Extraindo os arquivos da tradução. {0}/{1}",
+      "FreeSpaceText": "Aviso:\nPara instalar a tradução, a unidade precisa ter cerca de 5 GB livres.\nSua unidade tem {0} de espaço livre.\n\nContinuar?",
+      "GameFilesBackupTitle": "Preparando arquivos para desinstalação",
+      "GameLocationBySettings": "Jogo encontrado pelo histórico do aplicativo.",
+      "InstallTranslationCompleteMessage": "Tradução instalada com sucesso!",
+      "LightningReturnFinalFantasy13": "Lightning Return FF13 pt-BR",
+      "LoadingTitleTranslationInstalling": "Instalando a tradução em {0}",
+      "LocalAppVersion": "Versão do programa: ",
+      "MakingBackup": "Fazendo cópia de segurança",
+      "TranslationUpdateMessage": "Uma nova versão da tradução está disponível.\nDeseja atualizar?",
+      "UninstallConfirmMessage": "Tem certeza que quer desinstalar a tradução?",
+      "UninstallCompleteMessage": "Desinstalação completa.",
+      "UninstallFailed": "É possível que o LRFF13 tenha sido desinstalado ou, durante a desinstalação foi interrompido inesperadamente."
+    },
+    "Exceptions": {
+      "GameDirectoryNotFounded": "Diretório do jogo não encontrado!",
+      "GameLocationInvalid": "Selecione a pasta correta do jogo.",
+      "PackageDirectoryNotFounded": "Diretório de extração do pacote não encontrado!",
+      "HttpRequestBroken": "Sem resposta do servidor! Você está conectado à internet?",
+      "PackageFileNotFounded": "Você precisa baixar o pacote antes de tentar instalar a tradução!",
+      "SteamGameNotFounded": "Versão steam do jogo não encontrada!",
+      "WriteFailed": "O arquivo não pôde ser gravado.\n\nVocê pode estar instalando no diretório somente leitura ou o programa não tem permissão para gravar neste.\nVerifique o diretório ou execute o programa abaixo. Direitos de administrador."
+    },
+    "SnackMessages": {
+      "AppUpdate": "Uma nova versão do instalador está disponível.",
+      "TranslationUpdate": "Uma nova versão da tradução está disponível."
+    },
+    "Warning": {
+      "GameLanguageFilesNotFounded": "{0} no idioma {1} não existe!",
+      "WithoutInstalledVersion": "Sem versão instalada!",
+      "WrongPackage": "Este não é um pacote de tradução para LRFFXIII."
+    }
+  }
+}
