@@ -22,11 +22,6 @@ public class GameFileNotFoundException : Exception
     {
         Logger.Error(message);
     }
-
-    public GameFileNotFoundException(string message, Exception innerException) : base(message, innerException)
-    {
-        Logger.Error(innerException, message);
-    }
 }
 
 public class PackageFileNotFoundException : Exception
@@ -46,11 +41,9 @@ public class PackageFileNotFoundException : Exception
 public class PackageMagicException : Exception
 {
     private static readonly ILogger Logger = LogManager.GetLogger();
-    private readonly string _message;
 
     public PackageMagicException(string message) : base(message)
     {
-        _message = message;
         Logger.Error(message);
     }
     public override string Message => Localization.Localizer.Get("Warning.WrongPackage");

@@ -7,18 +7,6 @@ namespace Installer.Common.Framework;
 public static class Exceptions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Exception CreateException(string message, params object[] args)
-    {
-        return new Exception(string.Format(message, args));
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Exception CreateArgumentException(string paramName, string message, params object[] args)
-    {
-        return new ArgumentException(string.Format(message, args), paramName);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T CheckArgumentNull<T>(T arg, string name) where T : class
     {
         return ReferenceEquals(arg, null) ? throw new ArgumentNullException(name) : arg;
@@ -47,23 +35,19 @@ public static class Exceptions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string CheckGameFileNotFoundException(string fullName)
+    public static void CheckGameFileNotFoundException(string fullName)
     {
         CheckArgumentNullOrEmpty(fullName, "fullName");
         if (!File.Exists(fullName))
             throw new GameFileNotFoundException(fullName);
-
-        return fullName;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string CheckPackageFileNotFoundException(string fullName)
+    public static void CheckPackageFileNotFoundException(string fullName)
     {
         CheckArgumentNullOrEmpty(fullName, "fullName");
         if (!File.Exists(fullName))
             throw new PackageFileNotFoundException(fullName);
-
-        return fullName;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -79,13 +63,11 @@ public static class Exceptions
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string CheckDirectoryNotFoundException(string fullName)
+    public static void CheckDirectoryNotFoundException(string fullName)
     {
         CheckArgumentNullOrEmpty(fullName, "fullName");
         if (!Directory.Exists(fullName))
             throw new DirectoryNotFoundException(fullName);
-
-        return fullName;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
