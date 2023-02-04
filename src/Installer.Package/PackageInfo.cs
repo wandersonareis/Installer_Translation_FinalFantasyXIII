@@ -20,7 +20,7 @@ public class PackageInfo : IPackageInfo
     }
     public bool IsValid(JsonData json)
     {
-        return _package.FileIsExists() && CompareFileId(json.TranslationId) && CompareToFileHash(json.Hash);
+        return _package.FileIsExists() && CompareFileId(json.UpdateTranslation.TranslationId) && CompareToFileHash(json.UpdateTranslation.Hash);
     }
 
     public void Validate()
@@ -31,7 +31,7 @@ public class PackageInfo : IPackageInfo
 
     public async Task GetPackageTranslation()
     {
-        JsonData json = await _installerServiceProvider.GetServerData();
+        JsonData json = await _installerServiceProvider.GetJsonData();
         if (IsValid(json))
         {
             _installerServiceProvider.InstallerConfig.TranslationId = ReadFileId();
@@ -40,9 +40,9 @@ public class PackageInfo : IPackageInfo
         }
 
         _ = Directory.CreateDirectory(@".\Resources");
-        await DownloaderManager.Instance.DoUpdate(json.TranslationUrl, _installerServiceProvider.ResourcesFile);
+        await DownloaderManager.Instance.DoUpdate(json.UpdateTranslation.TranslationUrl, _installerServiceProvider.ResourcesFile);
 
-        _installerServiceProvider.InstallerConfig.TranslationId = json.TranslationId;
+        _installerServiceProvider.InstallerConfig.TranslationId = json.UpdateTranslation.TranslationId;
 
         JsonHelper.SerializeToFile(_installerServiceProvider.InstallerConfig, _installerServiceProvider.ConfigFile);
     }

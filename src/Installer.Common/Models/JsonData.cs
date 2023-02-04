@@ -7,25 +7,22 @@ public record JsonData
 {
     public void Deconstruct(out string translationId, out string appVersion)
     {
-        translationId = TranslationId;
-        appVersion = AppVersion;
+        translationId = UpdateTranslation.TranslationId;
+        appVersion = UpdateApp.Version;
+    }
+
+    public void Deconstruct(out string translationId, out string translationUrl, out string translationChangelog)
+    {
+        translationId = UpdateTranslation.TranslationId;
+        translationUrl = UpdateTranslation.TranslationUrl;
+        translationChangelog = UpdateTranslation.PackageChangelog;
     }
 
     [Required]
     [JsonPropertyName("AutoUpdateApp")]
-    public AutoUpdateApp AutoUpdateModel { get; set; } = null!;
-    [Required] public string AppVersion { get; init; } = string.Empty;
+    public AutoUpdateApp UpdateApp { get; set; } = null!;
 
-    public string AppUrl { get; init; } = string.Empty;
-    
-    [Required] public string UpdateUrl { get; init; } = string.Empty;
-    
-    public string AppChangelog { get; init; } = string.Empty;
-    [Required] public string Hash { get; init; } = string.Empty;
-    public string PackageChangelog { get; init; } = string.Empty;
-    
     [Required]
-    [JsonPropertyName("TranslationID")]
-    public string TranslationId { get; init; } = string.Empty;
-    [Required] public string TranslationUrl { get; init; } = string.Empty;
+    [JsonPropertyName("UpdateTranslation")]
+    public AutoUpdateTranslation UpdateTranslation { get; set; } = null!;
 }

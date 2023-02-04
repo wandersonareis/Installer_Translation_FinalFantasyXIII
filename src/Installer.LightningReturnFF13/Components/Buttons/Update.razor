@@ -34,7 +34,7 @@
     {
         try
         {
-            (string translationId, string appVersion) = await InstallerServiceProvider.GetServerData();
+            (string translationId, string appVersion) = await InstallerServiceProvider.GetJsonData();
 
             bool newAppVersion = InstallerServiceProvider.CheckAppVersion(appVersion);
             string localPackageDate = Localization.Instance.TranslationLocalDate + InstallerServiceProvider.InstallerConfig.TranslationId.ConvertFromUnixTimestamp();
@@ -55,8 +55,6 @@
             DialogResult? result = await dialog.Result;
 
             if (result.Canceled) return;
-
-
             await TranslationUpdate();
         }
         catch (Exception e)
@@ -79,24 +77,10 @@
 
     private async Task TranslationUpdate()
     {
-        JsonData jsonData = await InstallerServiceProvider.GetServerData();
+        JsonData jsonData = await InstallerServiceProvider.GetJsonData();
         string translationUpdateMessage =
-            string.IsNullOrEmpty(jsonData.PackageChangelog) ?
-                Localization.Instance.TranslationUpdateMessage : $"{Localization.Instance.TranslationUpdateMessage}\n\nAté agora:\n{jsonData.PackageChangelog}";
-
-        if (!InstallerServiceProvider.CheckAppVersion(jsonData.AppVersion))
-        {
-            bool? result = await DialogService.ShowMessageBox(
-                InstallerBase.MessageTitle,
-                Localization.Instance.UpdateAppMessage,
-                yesText: "Atualizar Instalador", cancelText: "Cancelar");
-
-            if (result == true)
-            {
-                //await HelperServices.CheckApp(jsonData);
-                return;
-            }
-        }
+            string.IsNullOrEmpty(jsonData.UpdateTranslation.PackageChangelog) ?
+                Localization.Instance.TranslationUpdateMessage : $"{Localization.Instance.TranslationUpdateMessage}\n\nAté agora:\n{jsonData.UpdateTranslation.PackageChangelog}";
 
         if (!PackageInfo.IsValid(jsonData))
         {
@@ -105,7 +89,7 @@
                 translationUpdateMessage,
                 yesText: "Atualizar pacote", cancelText: "Cancelar");
 
-            if (result == true)
+            if (result is true)
             {
                 await PackageInfo.GetPackageTranslation();
             }

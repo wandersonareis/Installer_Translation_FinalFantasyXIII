@@ -123,7 +123,7 @@
 
     private async Task GetTranslationPackageUpdate()
     {
-        JsonData jsonFromServer = await InstallerServiceProvider.GetServerData();
+        JsonData jsonFromServer = await InstallerServiceProvider.GetJsonData();
 
         if (PackageInfo.IsValid(jsonFromServer)) return;
 
@@ -165,22 +165,22 @@
 
     private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
     {
-        JsonData json = InstallerServiceProvider.JsonData;
+        JsonData json = InstallerServiceProvider.JsonDataSync;
         args.UpdateInfo = new UpdateInfoEventArgs
         {
-            CurrentVersion = json.AutoUpdateModel.Version,
-            ChangelogURL = json.AutoUpdateModel.Changelog,
-            DownloadURL = json.AutoUpdateModel.Url,
+            CurrentVersion = json.UpdateApp.Version,
+            ChangelogURL = json.UpdateApp.Changelog,
+            DownloadURL = json.UpdateApp.Url,
             Mandatory = new Mandatory
             {
-                Value = json.AutoUpdateModel.Mandatorys.Value,
-                MinimumVersion = json.AutoUpdateModel.Mandatorys.MinVersion,
-                UpdateMode = (Mode)json.AutoUpdateModel.Mandatorys.Mode
+                Value = json.UpdateApp.Mandatorys.Value,
+                MinimumVersion = json.UpdateApp.Mandatorys.MinVersion,
+                UpdateMode = (Mode)json.UpdateApp.Mandatorys.Mode
             },
             CheckSum = new CheckSum
             {
-                Value = json.AutoUpdateModel.Checksum.Value,
-                HashingAlgorithm = json.AutoUpdateModel.Checksum.HashingAlgorithm
+                Value = json.UpdateApp.Checksum.Value,
+                HashingAlgorithm = json.UpdateApp.Checksum.HashingAlgorithm
             }
         };
     }
