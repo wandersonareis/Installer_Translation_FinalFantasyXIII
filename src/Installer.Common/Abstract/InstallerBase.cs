@@ -39,7 +39,7 @@ public abstract class InstallerBase
         }
     };
 
-    public bool CheckAppVersion(string version) => Assembly.GetExecutingAssembly().GetName().Version >= new Version(version: version);
+    public bool CheckAppVersion(string serverVersion) => Assembly.GetExecutingAssembly().GetName().Version >= new Version(version: serverVersion);
 
     public void MoveFiles(string source, string des) => File.Move(sourceFileName: source, destFileName: des, overwrite: true);
 
