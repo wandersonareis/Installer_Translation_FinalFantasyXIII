@@ -8,8 +8,6 @@ public abstract class InstallerBase
     public const string MessageTitle = "Lightning Return FF13 pt-BR";
     public const int SteamGameId = 345350;
     protected const string PackageFileName = "[tribogamer.com]_Lightning_Return_FF13.bin";
-    protected const string InstallerName = "LightningReturnFFXIII_pt-BR";
-    protected const string InstallerUpdateName = "LightningReturnFFXIII_PT-BR update";
 
     protected const string DataUriLrff13 = "https://api.npoint.io/b7fa9dd201b5e145b492";
 

@@ -25,7 +25,6 @@ public class DownloaderManager
             Console.WriteLine(e);
             throw;
         }
-
     }
 
     // ReSharper disable once MemberCanBeMadeStatic.Global
