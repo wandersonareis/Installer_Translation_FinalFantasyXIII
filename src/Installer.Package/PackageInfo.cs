@@ -31,7 +31,7 @@ public class PackageInfo : IPackageInfo
 
     public async Task GetPackageTranslation()
     {
-        JsonData json = await _installerServiceProvider.GetJsonData();
+        JsonData json = await _installerServiceProvider.GetJsonDataAsync();
         if (IsValid(json))
         {
             _installerServiceProvider.InstallerConfig.TranslationId = ReadFileId();
@@ -40,7 +40,7 @@ public class PackageInfo : IPackageInfo
         }
 
         _ = Directory.CreateDirectory(@".\Resources");
-        await DownloaderManager.Instance.DoUpdate(json.UpdateTranslation.TranslationUrl, _installerServiceProvider.ResourcesFile);
+        await DownloaderManager.DoUpdateAsync(json.UpdateTranslation.TranslationUrl, _installerServiceProvider.ResourcesFile);
 
         _installerServiceProvider.InstallerConfig.TranslationId = json.UpdateTranslation.TranslationId;
 

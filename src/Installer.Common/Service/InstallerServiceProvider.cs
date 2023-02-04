@@ -13,9 +13,9 @@ public class InstallerServiceProvider : InstallerBase
 
     public readonly string ConfigFile;
     public readonly string ResourcesFile;
-    public JsonData JsonData => DownloaderManager.Instance.GetApiJson(DataUriLrff13).GetAwaiter().GetResult();
     public string UriLrff13 => DataUriLrff13;
-
+    public JsonData JsonDataSync => DownloaderManager.GetApiJsonAsync(DataUriLrff13).GetAwaiter().GetResult();
+    
     public InstallerServiceProvider()
     {
         ConfigFile = Path.Combine(AppDirectory, "Config", "config.json");
