@@ -1,4 +1,5 @@
-﻿@using MudBlazor.Utilities
+﻿@using AutoUpdaterDotNET;
+@using MudBlazor.Utilities
 @using Installer.Package
 @using Installer.Common.Logger
 @using Installer.Common.Localizations
@@ -73,15 +74,20 @@
     {
         try
         {
+            AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
+            AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
+
+            AutoUpdater.Start(InstallerServiceProvider.UriLrff13);
+            AutoUpdater.RunUpdateAsAdmin = false;
+
             await GetTranslationPackageUpdate();
-    //await GetApplicationUpdate();
             if (GameLocationProvider.Provider()) return;
 
             InstallerServiceProvider.GameLocationInfo = new GameLocationInfo("");
         }
         catch (HttpRequestException httpRequestException)
         {
-            //todo: permitir instalação da tradução apenas pelo pacote quando houver erro da api
+    //todo: permitir instalação da tradução apenas pelo pacote quando houver erro da api
             _logger.Error(httpRequestException, Localization.Instance.WriteFailed);
 
             var options = new DialogOptions
@@ -125,27 +131,59 @@
         {
             config.RequireInteraction = true;
             config.ShowCloseIcon = true;
-            config.Onclick = async snackbar => { await PackageInfo.GetPackageTranslation(); };
+            config.Onclick = async _ => { await PackageInfo.GetPackageTranslation(); };
         });
     }
 
-    //todo: Encontrar outro modo de distribuir atualizações do instalador
-    // private async Task GetApplicationUpdate()
-    // {
-    //     JsonData jsonFromServer = await _helperServices.GetServerData();
-    //     bool app = _helperServices.CheckAppVersion(jsonFromServer.AppVersion);
-    //     if (_helperServices.CheckAppVersion(jsonFromServer.AppVersion)) return;
-    //
-    //     Snackbar.Add(Localization.Instance.UpdateAppMessageSnack, Severity.Info, config =>
-    //         {
-    //             config.RequireInteraction = true;
-    //             config.ShowCloseIcon = true;
-    //             config.Onclick = async snackbar =>
-    //             {
-    //                 await _helperServices.CheckApp(jsonFromServer);
-    //             };
-    //         });
-    // }
+    private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
+    {
+        if (args.Error is not null || !args.IsUpdateAvailable) return;
+
+        try
+        {
+            Snackbar.Add(Localization.Instance.UpdateAppMessageSnack, Severity.Info, config =>
+            {
+                config.RequireInteraction = true;
+                config.ShowCloseIcon = true;
+                config.Onclick = _ =>
+                {
+                    if (AutoUpdater.DownloadUpdate(args)) Application.Exit();
+                    return Task.CompletedTask;
+                };
+            });
+        }
+        catch (Exception err)
+        {
+            _logger.Error(err, err.GetType().Name);
+
+            DialogService.ShowMessageBox(
+                err.GetType().Name,
+                err.Message,
+                yesText: "Ok!");
+        }
+    }
+
+    private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
+    {
+        JsonData json = InstallerServiceProvider.JsonData;
+        args.UpdateInfo = new UpdateInfoEventArgs
+        {
+            CurrentVersion = json.AutoUpdateModel.Version,
+            ChangelogURL = json.AutoUpdateModel.Changelog,
+            DownloadURL = json.AutoUpdateModel.Url,
+            Mandatory = new Mandatory
+            {
+                Value = json.AutoUpdateModel.Mandatorys.Value,
+                MinimumVersion = json.AutoUpdateModel.Mandatorys.MinVersion,
+                UpdateMode = (Mode)json.AutoUpdateModel.Mandatorys.Mode
+            },
+            CheckSum = new CheckSum
+            {
+                Value = json.AutoUpdateModel.Checksum.Value,
+                HashingAlgorithm = json.AutoUpdateModel.Checksum.HashingAlgorithm
+            }
+        };
+    }
 
     readonly MudTheme _lightningReturnTheme = new()
     {
@@ -156,6 +194,7 @@
             TextPrimary = (MudColor)"#3b82f6",
         }
     };
+
 }
 
 <style>

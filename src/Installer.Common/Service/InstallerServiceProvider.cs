@@ -12,26 +12,16 @@ public class InstallerServiceProvider : InstallerBase
 
     public readonly string ConfigFile;
     public readonly string ResourcesFile;
-    private readonly string _appUpdate;
+    public JsonData JsonData => DownloaderManager.Instance.GetApiJson(DataUriLrff13).GetAwaiter().GetResult();
+    public string UriLrff13 => DataUriLrff13;
 
     public InstallerServiceProvider()
     {
         ConfigFile = Path.Combine(AppDirectory, "Config", "config.json");
         ResourcesFile = Path.Combine(AppDirectory, "Resources", PackageFileName);
-        _appUpdate = Path.Combine(AppDirectory, InstallerUpdateName);
-
         InstallerConfig = new InstallerConfig();
         GameLocationInfo = new GameLocationInfo(InstallerConfig.GameLocation);
     }
 
     public async Task<JsonData> GetServerData() => await DownloaderManager.Instance.GetApiJson(DataUriLrff13);
-
-    //public async ValueTask CheckApp(JsonData json)
-    //{
-    //    await _appUpdate.DeleteEvenWhenUsedAsync();
-    //    await DownloaderManager.Instance.DoUpdate(json.UpdateUrl, _appUpdate);
-    //    Thread.Sleep(1000);
-    //    Cli.Wrap(_appUpdate).ExecuteAsync().GetAwaiter();
-    //    MediaTypeNames.Application.Exit();
-    //}
 }
