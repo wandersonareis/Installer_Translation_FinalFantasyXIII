@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Runtime.CompilerServices;
-using Installer.Common.Localizations;
+using Installer.Common.localization;
 
 namespace Installer.Common.Framework;
 
@@ -75,7 +75,7 @@ public static class Exceptions
         using BinaryReader br = new(stream);
         long magic = br.ReadInt64();
         if (magic != 0x494949584646524c)
-            throw new PackageMagicException(Localization.Instance.WrongPackage);
+            throw new PackageMagicException(Localization.Localizer.Get("Warning.WrongPackage"));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

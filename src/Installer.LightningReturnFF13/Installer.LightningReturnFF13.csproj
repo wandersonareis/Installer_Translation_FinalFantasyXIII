@@ -39,6 +39,7 @@
 		<Content Remove="wwwroot\css\app.min.css" />
 		<EmbeddedResource Include="wwwroot\css\app.min.css" />
 		<None Remove="Components\Dialogs\Loading.razor.css" />
+		<Content Remove="localization\localizations.json" />
 	</ItemGroup>
 
 	<ItemGroup>

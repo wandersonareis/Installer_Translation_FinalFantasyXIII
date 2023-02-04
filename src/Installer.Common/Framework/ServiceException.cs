@@ -1,4 +1,4 @@
-﻿using Installer.Common.Localizations;
+﻿using Installer.Common.localization;
 using Installer.Common.Logger;
 
 namespace Installer.Common.Framework;
@@ -40,12 +40,7 @@ public class PackageFileNotFoundException : Exception
         Logger.Error(message);
     }
 
-    public PackageFileNotFoundException(string message, Exception innerException) : base(message, innerException)
-    {
-        _message = message;
-        Logger.Error(innerException, message);
-    }
-    public override string Message => string.Format(Localization.Instance.PackageFileNotFound, _message[AppDomain.CurrentDomain.BaseDirectory.Length..]);
+    public override string Message => Localization.Localizer.Get("Exceptions.PackageFileNotFounded");
 }
 
 public class PackageMagicException : Exception
@@ -58,11 +53,5 @@ public class PackageMagicException : Exception
         _message = message;
         Logger.Error(message);
     }
-
-    public PackageMagicException(string message, Exception innerException) : base(message, innerException)
-    {
-        _message = message;
-        Logger.Error(innerException, message);
-    }
-    public override string Message => Localization.Instance.WrongPackage;
+    public override string Message => Localization.Localizer.Get("Warning.WrongPackage");
 }

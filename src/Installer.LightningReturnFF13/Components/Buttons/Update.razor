@@ -1,16 +1,17 @@
 ﻿@using Installer.Package
 @using Installer.Common.Framework.Extensions
-@using Installer.Common.Localizations
 @using Installer.Common.Models
 @using Installer.LightningReturnFF13.Components.Dialogs
 @using Installer.Common.Abstract
+@using Installer.Common.Framework
+@using Installer.Common.localization
 @using Installer.Common.Service
 @inject InstallerServiceProvider InstallerServiceProvider
 @inject IDialogService DialogService
 @inject IPackageInfo PackageInfo
 
 
-<li @onmouseover="HandleMouseover" @onmouseleave="HandleMouseleave" @onclick="Confirm">@Localization.Instance.BtnUpdate</li>
+<li @onmouseover="HandleMouseover" @onmouseleave="HandleMouseleave" @onclick="Confirm">@_btnUpdate</li>
 
 
 @code {
@@ -19,8 +20,7 @@
     [Parameter]
     public EventCallback<string> OnMouseLeave { get; set; }
 
-    //private static readonly InstallerServiceProvider HelperServices = InstallerServiceProvider.GetInstance();
-
+    private string _btnUpdate = Localization.Localizer.Get("home-page.body.buttons.update");
     private void HandleMouseover()
     {
         OnMouseover.InvokeAsync(string.Empty);
@@ -34,12 +34,12 @@
     {
         try
         {
-            (string translationId, string appVersion) = await InstallerServiceProvider.GetJsonData();
+            (string translationId, string appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
 
             bool newAppVersion = InstallerServiceProvider.CheckAppVersion(appVersion);
-            string localPackageDate = Localization.Instance.TranslationLocalDate + InstallerServiceProvider.InstallerConfig.TranslationId.ConvertFromUnixTimestamp();
-            string serverPackageDate = Localization.Instance.TranslationFromServerDate + translationId.ConvertFromUnixTimestamp();
-            string appVersionMessage = Localization.Instance.AppVersion + appVersion;
+            string localPackageDate = Localization.Localizer.Get("Messages.DateFromLocalTranslationText") + InstallerServiceProvider.InstallerConfig.TranslationId.ConvertFromUnixTimestamp();
+            string serverPackageDate = Localization.Localizer.Get("Messages.DateFromServerTranslationText") + translationId.ConvertFromUnixTimestamp();
+            string appVersionMessage = Localization.Localizer.Get("Messages.LocalAppVersion") + appVersion;
 
             var parameters = new DialogParameters
         {
@@ -77,17 +77,19 @@
 
     private async Task TranslationUpdate()
     {
-        JsonData jsonData = await InstallerServiceProvider.GetJsonData();
+        JsonData jsonData = await InstallerServiceProvider.GetJsonDataAsync();
+        string htmlTranslationUpdateMessage = Localization.Localizer.Get("Messages.TranslationUpdateMessage").ConvertLineBreaksToHtml();
         string translationUpdateMessage =
             string.IsNullOrEmpty(jsonData.UpdateTranslation.PackageChangelog) ?
-                Localization.Instance.TranslationUpdateMessage : $"{Localization.Instance.TranslationUpdateMessage}\n\nAté agora:\n{jsonData.UpdateTranslation.PackageChangelog}";
+                htmlTranslationUpdateMessage : $"{htmlTranslationUpdateMessage}\n\nAté agora:\n{jsonData.UpdateTranslation.PackageChangelog}".ConvertLineBreaksToHtml();
 
         if (!PackageInfo.IsValid(jsonData))
         {
             bool? result = await DialogService.ShowMessageBox(
                 InstallerBase.MessageTitle,
                 translationUpdateMessage,
-                yesText: "Atualizar pacote", cancelText: "Cancelar");
+                yesText: Localization.Localizer.Get("home-page.body.MessageBoxButtons.TranslationUpdateYesText"),
+                cancelText: Localization.Localizer.Get("home-page.body.MessageBoxButtons.TranslationUpdateCancelText"));
 
             if (result is true)
             {

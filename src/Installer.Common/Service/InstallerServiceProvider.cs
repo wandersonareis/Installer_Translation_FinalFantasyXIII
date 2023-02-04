@@ -1,6 +1,7 @@
 ﻿using Installer.Common.Abstract;
 using Installer.Common.Downloader;
 using Installer.Common.GameLocation;
+using Installer.Common.localization;
 using Installer.Common.Models;
 
 namespace Installer.Common.Service;
@@ -23,5 +24,6 @@ public class InstallerServiceProvider : InstallerBase
         GameLocationInfo = new GameLocationInfo(InstallerConfig.GameLocation);
     }
 
-    public async Task<JsonData> GetServerData() => await DownloaderManager.Instance.GetApiJson(DataUriLrff13);
+    public async Task<JsonData> GetJsonDataAsync() => await DownloaderManager.GetApiJsonAsync(DataUriLrff13);
+    public string ExtractingPackageFiles(int fileCount, int total) => string.Format(Localization.Localizer.Get("Messages.ExtractingPackageFiles"),fileCount, total);
 }

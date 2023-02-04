@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Installer.Common.Framework;
 using Installer.Common.Framework.Extensions;
-using Installer.Common.Localizations;
+using Installer.Common.localization;
 using Installer.Common.Logger;
 using Installer.Common.Models;
 using Installer.Common.Service;
@@ -25,7 +25,7 @@ public class UninstallerProvider : IUninstallerProvider
     public async ValueTask TranslationUninstall()
     {
         if (!_installerServiceProvider.GameLocationInfo.BackupDirectory.DirectoryIsExists())
-            throw new ServiceException(Localization.Instance.UninstallFailed);
+            throw new ServiceException(Localization.Localizer.Get("Messages.UninstallFailed"));
 
         _logger.Info("Restaurando backup");
 
@@ -38,7 +38,7 @@ public class UninstallerProvider : IUninstallerProvider
             {
                 await _dialogService.ShowMessageBox(
                     new StackFrame(1).GetMethod()?.DeclaringType?.Name,
-                    $@"{queueDataFile} no idioma {queueDataFile.Language} não existe!",
+                    string.Format(Localization.Localizer.Get("Warning.GameLanguageFilesNotFounded"), queueDataFile, queueDataFile.Language),
                     yesText: "Ok!");
                 continue;
             }

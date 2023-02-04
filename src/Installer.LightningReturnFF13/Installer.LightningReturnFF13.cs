@@ -25,7 +25,7 @@ public partial class LightningReturnFf13 : Form
 
         InitializeComponent();
         LogManager.Initialize(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"installer-{_date:O}.log"));
-
+        
         blazorWebView1.HostPage = @"wwwroot\index.html";
         blazorWebView1.Services = services.BuildServiceProvider();
         blazorWebView1.RootComponents.Add<Main>("#app");

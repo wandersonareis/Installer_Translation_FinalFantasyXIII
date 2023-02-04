@@ -1,6 +1,6 @@
 ﻿using Game.Injector;
 using Installer.Common.Framework;
-using Installer.Common.Localizations;
+using Installer.Common.localization;
 using Installer.Common.Models;
 using Installer.Common.Service;
 using Installer.Package;
@@ -26,20 +26,22 @@ public class Installer : ITranslationIntaller
     {
         if (string.IsNullOrEmpty(_installerServiceProvider.InstallerConfig.GameLocation))
         {
-            throw new ServiceException(Localization.Instance.GameDirectoryNot, new FileNotFoundException());
+            throw new ServiceException(Localization.Localizer.Get("Exceptions.GameDirectoryNotFounded"), new FileNotFoundException());
         }
 
         await _backupProvider.Backup(progress);
 
         string tempPackage = await _packageReader.ReadPackage(progress);
-        if (string.IsNullOrEmpty(tempPackage)) throw new DirectoryNotFoundException("Diretório de extração do pacote não encontrado!");
+        if (string.IsNullOrEmpty(tempPackage)) throw new DirectoryNotFoundException(Localization.Localizer.Get("Exceptions.PackageDirectoryNotFounded"));
 
         progress.Start();
         progress.TotalSteps = _installerServiceProvider.FilesListLrff13.Count;
 
         _gameFilesInserter.Initializer(tempPackage);
 
-        progress.Title = string.Format(Localization.Instance.TranslationInstallingLoadingTitle, Localization.Instance.LightningReturnFinalFantasy13);
+        progress.Title = 
+            string.Format(Localization.Localizer.Get("Messages.LoadingTitleTranslationInstalling"), Localization.Localizer.Get("Messages.LightningReturnFinalFantasy13"));
+        
         for (int i = 0; i < _installerServiceProvider.FilesListLrff13.Count; i++)
         {
             GameSysFiles gameSysFiles = _installerServiceProvider.FilesListLrff13[i];

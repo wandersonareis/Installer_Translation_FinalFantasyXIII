@@ -1,13 +1,13 @@
 ﻿@using Installer.LightningReturnFF13.Shared.Interfaces
 @using Installer.Common.Logger
-@using Installer.Common.Localizations
 @using Installer.Common.Service
 @using Installer.LightningReturnFF13.Components.Dialogs
+@using Installer.Common.localization
 @inject InstallerServiceProvider InstallerServiceProvider
 @inject IDialogService DialogService
 @inject IUninstallerProvider Uninstaller
 
-<li @onmouseover="HandleMouseover" @onmouseleave="HandleMouseleave" @onclick="HandleClickTask">@Localization.Instance.BtnUnistall</li>
+<li @onmouseover="HandleMouseover" @onmouseleave="HandleMouseleave" @onclick="HandleClickTask">@_btnUninstall</li>
 
 @code {
     [Parameter]
@@ -15,7 +15,7 @@
     [Parameter]
     public EventCallback<string> OnMouseLeave { get; set; }
 
-    //private readonly InstallerServiceProvider _helperServices = InstallerServiceProvider.GetInstance();
+    private string _btnUninstall = Localization.Localizer.Get("home-page.body.buttons.uninstall");
     private readonly ILogger _logger = LogManager.GetLogger();
 
     private void HandleMouseover()
@@ -33,7 +33,7 @@
 
         var parameters = new DialogParameters
         {
-            { "ContentText", (MarkupString)Localization.Instance.UninstallConfirm },
+            { "ContentText", (MarkupString)Localization.Localizer.Get("Messages.UninstallConfirmMessage") },
             { "ButtonText", "Desinstalar" }
         };
 
@@ -45,7 +45,7 @@
             try
             {
                 await Uninstaller.TranslationUninstall();
-                _logger.Info(Localization.Instance.UninstallComplete);
+                _logger.Info(Localization.Localizer.Get("Messages.UninstallCompleteMessage"));
             }
             catch (Exception e)
             {
@@ -65,6 +65,4 @@
             }
         }
     }
-
-
 }

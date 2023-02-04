@@ -3,14 +3,14 @@
 @using Installer.Package
 @using Installer.Common.Framework
 @using Installer.Common.Framework.Extensions
-@using Installer.Common.Localizations
+@using Installer.Common.localization
 @using Installer.Common.Service
 @inject InstallerServiceProvider InstallerServiceProvider
 @inject ITranslationIntaller Installer
 @inject IPackageInfo PackageInfo
 @inject IDialogService DialogService
 
-<li @onmouseover="HandleMouseover" @onmouseleave="HandleMouseleave" @onclick="HandlerClickTask">@Localization.Instance.BtnInstall</li>
+<li @onmouseover="HandleMouseover" @onmouseleave="HandleMouseleave" @onclick="HandlerClickTask">@_btnInstallText</li>
 
 @code {
     [Parameter]
@@ -19,6 +19,8 @@
     public EventCallback<string> OnMouseLeave { get; set; }
     [CascadingParameter]
     public LoadingHandler LoadingConfiguration { get; set; } = default!;
+    
+    private string _btnInstallText = Localization.Localizer.Get("home-page.body.buttons.install");
 
     private void HandleMouseover()
     {
@@ -38,21 +40,19 @@
             PackageInfo.Validate();
             InstallerServiceProvider.GameLocationInfo.Validate();
 
-            string totalSizeSuffix = InstallerServiceProvider.GameLocationInfo.IsValidGamePath() ? Path.GetPathRoot(path: InstallerServiceProvider.GameLocationInfo.RootDirectory).GetDriveFreeSpace().SizeSuffix() : string.Empty;
-            string freeSpaceMessage = string.Format(format: Localization.Instance.FreeSpace, arg0: totalSizeSuffix);
+            string totalSizeSuffix = InstallerServiceProvider.GameLocationInfo.IsValidGamePath() ?
+                Path.GetPathRoot(path: InstallerServiceProvider.GameLocationInfo.RootDirectory).GetDriveFreeSpace().SizeSuffix() : string.Empty;
+            
+            string freeSpaceMessage = Localization.Localizer.GetFormat("pt","Messages.FreeSpaceText", totalSizeSuffix);
 
-            options = new DialogOptions
-                {
-                    MaxWidth = MaxWidth.Small
-                };
-
-            DialogResult result = await ShowModal(contextText: freeSpaceMessage, options, buttonText: "Instalar", cancelButton: true);
+            DialogResult result = await ShowModal(contextText: freeSpaceMessage, buttonText: "Instalar", cancelButton: true, 
+                options: new DialogOptions{MaxWidth = MaxWidth.Small });
 
             if (!result.Canceled)
             {
                 await Installer.Install(progress: LoadingConfiguration);
 
-                await ShowModal(Localization.Instance.InstallTranslationComplete);
+                await ShowModal(Localization.Localizer.Get("Messages.InstallTranslationCompleteMessage"));
             }
         }
         catch (Exception e)

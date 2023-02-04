@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Installer.Common.Framework;
-using Installer.Common.Localizations;
 using Installer.Common.Service;
 using ZstdSharp;
 
@@ -42,7 +41,7 @@ public sealed class PackageReader : IPackageReader
 
                 bool isCompressed = br.ReadBoolean();
 
-                progress.Title = Localization.Instance.ExtractingPackageFiles(i + 1, fileCount);
+                progress.Title = _installerServiceProvider.ExtractingPackageFiles(i + 1, fileCount);
 
                 if (isCompressed)
                 {

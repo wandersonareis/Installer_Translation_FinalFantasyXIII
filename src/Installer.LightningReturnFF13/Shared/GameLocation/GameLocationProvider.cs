@@ -1,7 +1,7 @@
 ﻿using Installer.Common;
 using Installer.Common.Framework.Extensions;
 using Installer.Common.GameLocation;
-using Installer.Common.Localizations;
+using Installer.Common.localization;
 using Installer.Common.Logger;
 using Installer.Common.Models;
 using Installer.Common.Service;
@@ -33,7 +33,7 @@ public class GameLocationProvider : IInfoProvider
             IGameLocationInfo result = new GameLocationInfo(_installerServiceProvider.InstallerConfig.GameLocation);
             if (result.IsValidGamePath())
             {
-                _logger.Info(Localization.Instance.GameLocationBySettings);
+                _logger.Info(Localization.Localizer.Get("Messages.GameLocationBySettings"));
                 _installerServiceProvider.GameLocationInfo = result;
                 return true;
             }

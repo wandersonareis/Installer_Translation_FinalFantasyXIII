@@ -2,7 +2,7 @@
 using GameFinder.RegistryUtils;
 using GameFinder.StoreHandlers.Steam;
 using Installer.Common.Abstract;
-using Installer.Common.Localizations;
+using Installer.Common.localization;
 using Installer.Common.Logger;
 using Installer.Common.Service;
 
@@ -25,7 +25,7 @@ public sealed class GameLocationSteamProvider : ISteamGameLocation
 
         if (game == null)
         {
-            Logger.Error(Localization.Instance.SteamGameNotFounded);
+            Logger.Error(Localization.Localizer.Get("Exceptions.SteamGameNotFounded"));
             return false;
         }
 
@@ -34,7 +34,7 @@ public sealed class GameLocationSteamProvider : ISteamGameLocation
         var result = new GameLocationInfo(game.Path);
         if (!result.IsValidGamePath())
         {
-            Logger.Info(Localization.Instance.SteamGameNotFounded);
+            Logger.Info(Localization.Localizer.Get("Exceptions.SteamGameNotFounded"));
             return false;
         }
 
