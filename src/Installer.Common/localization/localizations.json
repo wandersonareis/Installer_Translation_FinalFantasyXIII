@@ -1,32 +1,61 @@
 ﻿{
-  "ar": {
-    "InvalidInput": "إدخال غير صالح",
-    "UnknownError": "خطأ غير معروف {0}",
-    "home-page": {
-      "title": "أهلا بك",
-      "body": {
-        "text": "بعض النصوص"
-      }
-    }
-  },
-  "de": {
-    "InvalidInput": "Ungültige Eingabe",
-    "UnknownError": "Unbekannter Fehler {0}",
-    "home-page": {
-      "title": "Willkommen",
-      "body": {
-        "text": "Etwas Text"
-      }
-    }
-  },
   "en": {
     "InvalidInput": "Invalid input",
     "UnknownError": "Unknown error {0}",
     "home-page": {
       "title": "Welcome",
       "body": {
-        "text": "Some text"
+        "buttons": {
+          "install": "Install translation",
+          "update": "Update translation",
+          "uninstall": "Uninstall translation"
+        },
+        "MessageBoxButtons": {
+          "TranslationUpdateYesText": "Update Package",
+          "TranslationUpdateCancelText": "Cancel"
+        },
+        "ConfigDialogText": {
+          "InputLabel": "Game location",
+          "SetGamePath": "Select the folder with the game.",
+          "HelpTextSucess": "This directory contains the game.",
+          "HelpTextError": "The selected directory does not contain the game."
+        }
       }
+    },
+    "Messages": {
+      "DateFromLocalTranslationText": "Current translation date: ",
+      "DateFromServerTranslationText": "Translation date on the server: ",
+      "ExtractingPackageFiles": "Extracting the translation files. {0}/{1}",
+      "FreeSpaceText": "Warning:\nTo install the translation, the drive must have about 5 GB free.\nYour drive has {0} free space.\n\nYou want to proceed?",
+      "GameFilesBackupTitle": "Preparing files for uninstallation",
+      "GameLocationBySettings": "Game found from the application's history.",
+      "InstallTranslationCompleteMessage": "Translation installed successfully!",
+      "LightningReturnFinalFantasy13": "Lightning Return FF13 pt-BR",
+      "LoadingTitleTranslationInstalling": "Installing the translation in {0}",
+      "LocalAppVersion": "Program version: ",
+      "MakingBackup": "Making a backup copy",
+      "TranslationUpdateMessage": "A new version of the translation is available.\nDo you want to upgrade?",
+      "UninstallConfirmMessage": "Are you sure you want to uninstall the translation?",
+      "UninstallCompleteMessage": "Complete uninstallation.",
+      "UninstallFailed": "It is possible that LRFF13 has been uninstalled, or during uninstallation was interrupted unexpectedly."
+    },
+    "Exceptions": {
+      "GameDirectoryNotFounded": "Game directory not found!",
+      "GameLocationInvalid": "Select the correct game folder.",
+      "PackageDirectoryNotFounded": "Package extraction directory not found!",
+      "HttpRequestBroken": "No response from the server! Are you connected to the Internet?",
+      "PackageFileNotFounded": "You need to download the package before trying to install the translation!",
+      "SteamGameNotFounded": "Steam version of the game not found!",
+      "WriteFailed": "The file could not be written.\n\nYou may be installing into a read-only directory or the program does not have permission to write to it.\nCheck the directory or run the program with administrator privileges."
+    },
+    "SnackMessages": {
+      "AppUpdate": "A new version of the installer is available.",
+      "TranslationUpdate": "A new version of the translation is available."
+    },
+    "Warning": {
+      "GameLanguageFilesNotFounded": "{0} in the language {1} does not exist!",
+      "WithoutInstalledVersion": "No version installed!",
+      "WrongPackage": "This is not a translation package for LRFFXIII."
     }
   },
   "pt": {
@@ -43,6 +72,12 @@
         "MessageBoxButtons": {
           "TranslationUpdateYesText": "Atualizar pacote",
           "TranslationUpdateCancelText": "Cancelar"
+        },
+        "ConfigDialogText": {
+          "InputLabel": "Local do jogo",
+          "SetGamePath": "Aponte para a pasta com o jogo.",
+          "HelpTextSucess": "Este diretório contém o jogo.",
+          "HelpTextError": "O diretório que foi apontado não contém o jogo."
         }
       }
     },
@@ -70,7 +105,7 @@
       "HttpRequestBroken": "Sem resposta do servidor! Você está conectado à internet?",
       "PackageFileNotFounded": "Você precisa baixar o pacote antes de tentar instalar a tradução!",
       "SteamGameNotFounded": "Versão steam do jogo não encontrada!",
-      "WriteFailed": "O arquivo não pôde ser gravado.\n\nVocê pode estar instalando no diretório somente leitura ou o programa não tem permissão para gravar neste.\nVerifique o diretório ou execute o programa abaixo. Direitos de administrador."
+      "WriteFailed": "O arquivo não pôde ser gravado.\n\nVocê pode estar instalando no diretório somente leitura ou o programa não tem permissão para gravar neste.\nVerifique o diretório ou execute o programa como administrador."
     },
     "SnackMessages": {
       "AppUpdate": "Uma nova versão do instalador está disponível.",
