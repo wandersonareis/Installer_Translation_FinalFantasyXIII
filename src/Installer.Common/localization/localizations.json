@@ -17,7 +17,7 @@
         "ConfigDialogText": {
           "InputLabel": "Game location",
           "SetGamePath": "Select the folder with the game.",
-          "HelpTextSucess": "This directory contains the game.",
+          "HelpTextSuccess": "This directory contains the game.",
           "HelpTextError": "The selected directory does not contain the game."
         }
       }
@@ -76,7 +76,7 @@
         "ConfigDialogText": {
           "InputLabel": "Local do jogo",
           "SetGamePath": "Aponte para a pasta com o jogo.",
-          "HelpTextSucess": "Este diretório contém o jogo.",
+          "HelpTextSuccess": "Este diretório contém o jogo.",
           "HelpTextError": "O diretório que foi apontado não contém o jogo."
         }
       }
