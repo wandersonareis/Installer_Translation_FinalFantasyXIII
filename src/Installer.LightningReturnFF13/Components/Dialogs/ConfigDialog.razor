@@ -1,12 +1,16 @@
 ﻿@using Installer.LightningReturnFF13.Shared.Interfaces
 @using Installer.Common.GameLocation
+@using Installer.Common.localization
 @using Installer.Common.Service
 @inject InstallerServiceProvider InstallerServiceProvider
 @inject IFolderBrowserService FolderBrowserService
 
 <MudDialog ClassContent="bg-slate-800 text-blue-400" ClassActions="bg-slate-800">
     <DialogContent>
-        <MudTextField AdornmentColor="Color.Primary" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.FolderOpen" Label="Local do jogo" OnAdornmentClick="ChangeFolder" ReadOnly="true" Value="GameLocation"/>
+        <MudTextField Adornment="Adornment.End" AdornmentColor="Color.Primary" AdornmentIcon="@Icons.Material.Filled.FolderOpen"
+                      @bind-Value="GameLocation" Error="@IsValid" ErrorText="@HelpText" HelperText="@HelpText" Immediate="true"
+                      Label="@Localization.Localizer.Get("home-page.body.ConfigDialogText.InputLabel")"
+                      OnAdornmentClick="ChangeFolder" ReadOnly="true" T="string" />
     </DialogContent>
     <DialogActions>
         <MudButton Color="Color.Primary" OnClick="Close">Ok</MudButton>
@@ -17,21 +21,44 @@
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = null!;
 
-    private string GameLocation => InstallerServiceProvider.GameLocationInfo.RootDirectory;
+    private bool IsValid { get; set; }
+    private string HelpText { get; set; } = Localization.Localizer.Get("home-page.body.ConfigDialogText.SetGamePath");
+    private string GameLocation { get; set; } = string.Empty;
 
-    private void Close()
+    protected override void OnAfterRender(bool firstRender)
     {
-        MudDialog.Close();
+        if (firstRender)
+        {
+            GameDirectoryValidate();
+        }
     }
 
-    //todo: implementar validação no próprio input
-    public void ChangeFolder()
+    private void Close() => MudDialog.Close();
+
+    private void ChangeFolder()
     {
         string path = FolderBrowserService.DisplayFolderPicker();
         if (string.IsNullOrEmpty(path)) return;
-        IGameLocationInfo result = new GameLocationInfo(path);
-        result.Validate();
 
+        IGameLocationInfo result = new GameLocationInfo(path);
         InstallerServiceProvider.GameLocationInfo = result;
+        GameDirectoryValidate();
+    }
+
+    private void GameDirectoryValidate()
+    {
+        if (InstallerServiceProvider.GameLocationInfo.IsValidGamePath())
+        {
+            GameLocation = InstallerServiceProvider.GameLocationInfo.RootDirectory;
+            HelpText = Localization.Localizer.Get("home-page.body.ConfigDialogText.HelpTextSuccess");
+            IsValid = false;
+            StateHasChanged();
+        }
+        else
+        {
+            HelpText = Localization.Localizer.Get("home-page.body.ConfigDialogText.HelpTextError");
+            IsValid = true;
+            StateHasChanged();
+        }
     }
 }
