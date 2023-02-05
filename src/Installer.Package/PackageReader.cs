@@ -16,7 +16,7 @@ public sealed class PackageReader : IPackageReader
 
     public async Task<string> ReadPackage(LoadingHandler progress)
     {
-        progress.IsIndeterminate = true;
+        progress.StartIndeterminate();
         progress.IsLoading = true;
 
         string patchDirectory = _installerServiceProvider.PatchDirectory;
@@ -25,7 +25,7 @@ public sealed class PackageReader : IPackageReader
         await using (FileStream stream = File.OpenRead(_installerServiceProvider.ResourcesFile))
         using (BinaryReader br = new(stream))
         {
-            byte[] _ = br.ReadBytes(16);
+            br.ReadBytes(16);
 
             int fileCount = br.ReadInt32();
             using Decompressor decompressor = new();

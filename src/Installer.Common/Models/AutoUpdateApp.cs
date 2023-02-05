@@ -9,7 +9,7 @@ public class AutoUpdateApp
     [JsonPropertyName("version")]
     public string Version { get; set; } = "0";
 
-    [Required] [JsonPropertyName("url")] public string Url { get; set; } = "Default";
+    [Required][JsonPropertyName("url")] public string Url { get; set; } = "Default";
 
     [JsonPropertyName("changelog")] public string Changelog { get; set; } = "Default";
 

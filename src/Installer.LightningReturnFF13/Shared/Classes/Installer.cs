@@ -24,11 +24,6 @@ public class Installer : ITranslationIntaller
     }
     public async Task Install(LoadingHandler progress)
     {
-        if (string.IsNullOrEmpty(_installerServiceProvider.InstallerConfig.GameLocation))
-        {
-            throw new ServiceException(Localization.Localizer.Get("Exceptions.GameDirectoryNotFounded"), new FileNotFoundException());
-        }
-
         await _backupProvider.Backup(progress);
 
         string tempPackage = await _packageReader.ReadPackage(progress);
@@ -39,9 +34,9 @@ public class Installer : ITranslationIntaller
 
         _gameFilesInserter.Initializer(tempPackage);
 
-        progress.Title = 
+        progress.Title =
             string.Format(Localization.Localizer.Get("Messages.LoadingTitleTranslationInstalling"), Localization.Localizer.Get("Messages.LightningReturnFinalFantasy13"));
-        
+
         for (int i = 0; i < _installerServiceProvider.FilesListLrff13.Count; i++)
         {
             GameSysFiles gameSysFiles = _installerServiceProvider.FilesListLrff13[i];
