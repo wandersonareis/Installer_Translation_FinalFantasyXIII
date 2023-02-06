@@ -8,8 +8,8 @@
 <MudDialog ClassContent="bg-slate-800 text-blue-400" ClassActions="bg-slate-800">
     <DialogContent>
         <MudTextField Adornment="Adornment.End" AdornmentColor="Color.Primary" AdornmentIcon="@Icons.Material.Filled.FolderOpen"
-                      @bind-Value="GameLocation" Error="@IsValid" ErrorText="@HelpText" HelperText="@HelpText" Immediate="true"
-                      Label="@Localization.Localizer.Get("home-page.body.ConfigDialogText.InputLabel")"
+                      @bind-Value="GameLocation" Error="@IsError" ErrorText="@HelpText" HelperText="@HelpText" Immediate="true"
+                      Label="@Localization.Localizer.Get("HomePage.Main.ConfigDialogText.InputLabel")"
                       OnAdornmentClick="ChangeFolder" ReadOnly="true" T="string" />
     </DialogContent>
     <DialogActions>
@@ -21,16 +21,14 @@
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = null!;
 
-    private bool IsValid { get; set; }
-    private string HelpText { get; set; } = Localization.Localizer.Get("home-page.body.ConfigDialogText.SetGamePath");
+    private bool IsError { get; set; }
+    private string HelpText { get; set; } = Localization.Localizer.Get("HomePage.Main.ConfigDialogText.SetGamePath");
     private string GameLocation { get; set; } = string.Empty;
 
-    protected override void OnAfterRender(bool firstRender)
+    protected override void OnInitialized()
     {
-        if (firstRender)
-        {
-            GameDirectoryValidate();
-        }
+        IsError = GameDirectoryValidate();
+        StateHasChanged();
     }
 
     private void Close() => MudDialog.Close();
@@ -42,23 +40,24 @@
 
         IGameLocationInfo result = new GameLocationInfo(path);
         InstallerServiceProvider.GameLocationInfo = result;
-        GameDirectoryValidate();
+        InstallerServiceProvider.PersistenceRegister.SetGamePath(path);
+        IsError = GameDirectoryValidate();
+        StateHasChanged();
     }
 
-    private void GameDirectoryValidate()
+    private bool GameDirectoryValidate()
     {
         if (InstallerServiceProvider.GameLocationInfo.IsValidGamePath())
         {
-            GameLocation = InstallerServiceProvider.GameLocationInfo.RootDirectory;
-            HelpText = Localization.Localizer.Get("home-page.body.ConfigDialogText.HelpTextSuccess");
-            IsValid = false;
+            GameLocation = InstallerServiceProvider.PersistenceRegister.GetGamePath();
+            HelpText = Localization.Localizer.Get("HomePage.Main.ConfigDialogText.HelpTextSuccess");
             StateHasChanged();
+            return false;
         }
-        else
-        {
-            HelpText = Localization.Localizer.Get("home-page.body.ConfigDialogText.HelpTextError");
-            IsValid = true;
-            StateHasChanged();
-        }
+
+        GameLocation = InstallerServiceProvider.PersistenceRegister.GetGamePath();
+        HelpText = Localization.Localizer.Get("HomePage.Main.ConfigDialogText.HelpTextError");
+        StateHasChanged();
+        return true;
     }
 }
