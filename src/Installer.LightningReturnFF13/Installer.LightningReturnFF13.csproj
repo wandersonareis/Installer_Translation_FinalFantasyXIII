@@ -32,7 +32,7 @@
 		<EmbeddedResource Include="StaticsFiles\_content\MudBlazor\MudBlazor.min.js" />
 		<Content Remove="StaticsFiles\package.json" />
 		<None Include="StaticsFiles\package.json">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</None>

@@ -84,7 +84,6 @@
             }
             catch (HttpRequestException httpRequestException)
             {
-                //todo: permitir instalação da tradução apenas pelo pacote quando houver erro da api
                 _logger.Error(httpRequestException, Localization.Localizer.Get("Exceptions.WriteFailed").ConvertLineBreaksToHtml());
 
                 var parameters = new DialogParameters

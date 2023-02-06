@@ -33,8 +33,6 @@
 
     private async Task HandlerClickTask()
     {
-        DialogOptions options;
-
         try
         {
             PackageInfo.Validate();
@@ -57,7 +55,7 @@
         }
         catch (Exception e)
         {
-            options = new DialogOptions
+            var options = new DialogOptions
                 {
                     CloseButton = false,
                     MaxWidth = MaxWidth.Large,
