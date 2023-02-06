@@ -20,7 +20,7 @@
     [Parameter]
     public EventCallback<string> OnMouseLeave { get; set; }
 
-    private string _btnUpdate = Localization.Localizer.Get("home-page.body.buttons.update");
+    private string _btnUpdate = Localization.Localizer.Get("HomePage.Main.Buttons.Update");
     private void HandleMouseover()
     {
         OnMouseover.InvokeAsync(string.Empty);
@@ -37,7 +37,7 @@
             (string translationId, string appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
 
             bool newAppVersion = InstallerServiceProvider.CheckAppVersion(appVersion);
-            string localPackageDate = Localization.Localizer.Get("Messages.DateFromLocalTranslationText") + InstallerServiceProvider.InstallerConfig.TranslationId.ConvertFromUnixTimestamp();
+            string localPackageDate = Localization.Localizer.Get("Messages.DateFromLocalTranslationText") + InstallerServiceProvider.PersistenceRegister.GetDateFromInstalledTranslation();
             string serverPackageDate = Localization.Localizer.Get("Messages.DateFromServerTranslationText") + translationId.ConvertFromUnixTimestamp();
             string appVersionMessage = Localization.Localizer.Get("Messages.LocalAppVersion") + appVersion;
 
@@ -77,19 +77,19 @@
 
     private async Task TranslationUpdate()
     {
-        JsonData jsonData = await InstallerServiceProvider.GetJsonDataAsync();
+        (string translationId, _, string translationHash, string translationChangelog) = await InstallerServiceProvider.GetJsonDataAsync();
         string htmlTranslationUpdateMessage = Localization.Localizer.Get("Messages.TranslationUpdateMessage").ConvertLineBreaksToHtml();
         string translationUpdateMessage =
-            string.IsNullOrEmpty(jsonData.UpdateTranslation.PackageChangelog) ?
-                htmlTranslationUpdateMessage : $"{htmlTranslationUpdateMessage}\n\nAté agora:\n{jsonData.UpdateTranslation.PackageChangelog}".ConvertLineBreaksToHtml();
+            string.IsNullOrEmpty(translationChangelog) ?
+                htmlTranslationUpdateMessage : $"{htmlTranslationUpdateMessage}\n\nAté agora:\n{translationChangelog}".ConvertLineBreaksToHtml();
 
-        if (!PackageInfo.IsValid(jsonData))
+        if (!PackageInfo.IsValid(id: translationId, hash: translationHash))
         {
             bool? result = await DialogService.ShowMessageBox(
                 InstallerBase.MessageTitle,
                 translationUpdateMessage,
-                yesText: Localization.Localizer.Get("home-page.body.MessageBoxButtons.TranslationUpdateYesText"),
-                cancelText: Localization.Localizer.Get("home-page.body.MessageBoxButtons.TranslationUpdateCancelText"));
+                yesText: Localization.Localizer.Get("HomePage.Main.MessageBoxButtons.TranslationUpdateYesText"),
+                cancelText: Localization.Localizer.Get("HomePage.Main.MessageBoxButtons.TranslationUpdateCancelText"));
 
             if (result is true)
             {

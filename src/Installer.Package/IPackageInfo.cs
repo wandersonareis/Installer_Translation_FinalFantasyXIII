@@ -1,10 +1,8 @@
-﻿using Installer.Common.Models;
-
-namespace Installer.Package;
+﻿namespace Installer.Package;
 
 public interface IPackageInfo
 {
-    bool IsValid(JsonData json);
+    bool IsValid(string id, string hash);
     void Validate();
     Task GetPackageTranslation();
 }

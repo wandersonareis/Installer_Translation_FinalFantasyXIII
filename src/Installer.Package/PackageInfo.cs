@@ -1,9 +1,7 @@
 ﻿using System.Security.Cryptography;
-using Installer.Common;
 using Installer.Common.Downloader;
 using Installer.Common.Framework;
 using Installer.Common.Framework.Extensions;
-using Installer.Common.Models;
 using Installer.Common.Service;
 
 namespace Installer.Package;
@@ -18,9 +16,9 @@ public class PackageInfo : IPackageInfo
         _installerServiceProvider = installerServiceProvider;
         _package = _installerServiceProvider.ResourcesFile;
     }
-    public bool IsValid(JsonData json)
+    public bool IsValid(string id, string hash)
     {
-        return _package.FileIsExists() && CompareFileId(json.UpdateTranslation.TranslationId) && CompareToFileHash(json.UpdateTranslation.Hash);
+        return _package.FileIsExists() && CompareFileId(id) && CompareToFileHash(hash);
     }
 
     public void Validate()
@@ -31,17 +29,16 @@ public class PackageInfo : IPackageInfo
 
     public async Task GetPackageTranslation()
     {
-        JsonData json = await _installerServiceProvider.GetJsonDataAsync();
-        if (IsValid(json))
+        (string translationId, string translationUrl, string translationHash, _) = await _installerServiceProvider.GetJsonDataAsync();
+
+        if (IsValid(id: translationId, hash: translationHash))
         {
             _installerServiceProvider.PersistenceRegister.SetInstalledTranslation(ReadFileId());
             return;
         }
 
         _ = Directory.CreateDirectory(@".\Resources");
-        await DownloaderManager.DoUpdateAsync(json.UpdateTranslation.TranslationUrl, _installerServiceProvider.ResourcesFile);
-
-        _installerServiceProvider.InstallerConfig.TranslationId = json.UpdateTranslation.TranslationId;
+        await DownloaderManager.DoUpdateAsync(translationUrl, _installerServiceProvider.ResourcesFile);
 
         _installerServiceProvider.PersistenceRegister.SetInstalledTranslation(translationId);
     }

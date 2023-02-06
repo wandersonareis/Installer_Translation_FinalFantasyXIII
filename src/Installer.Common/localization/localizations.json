@@ -2,13 +2,13 @@
   "en": {
     "InvalidInput": "Invalid input",
     "UnknownError": "Unknown error {0}",
-    "home-page": {
-      "title": "Welcome",
-      "body": {
-        "buttons": {
-          "install": "Install translation",
-          "update": "Update translation",
-          "uninstall": "Uninstall translation"
+    "HomePage": {
+      "Title": "Lightning Return FF13 pt-BR",
+      "Main": {
+        "Buttons": {
+          "Install": "Install translation",
+          "Update": "Update translation",
+          "Uninstall": "Uninstall translation"
         },
         "MessageBoxButtons": {
           "TranslationUpdateYesText": "Update Package",
@@ -61,13 +61,13 @@
   "pt": {
     "InvalidInput": "Entrada inválida",
     "UnknownError": "Error desconhecido {0}",
-    "home-page": {
-      "title": "Welcome",
-      "body": {
-        "buttons": {
-          "install": "Instalar tradução",
-          "update": "Atualizar tradução",
-          "uninstall": "Desinstalar tradução"
+    "HomePage": {
+      "Title": "Lightning Return FF13 pt-BR",
+      "Main": {
+        "Buttons": {
+          "Install": "Instalar tradução",
+          "Update": "Atualizar tradução",
+          "Uninstall": "Desinstalar tradução"
         },
         "MessageBoxButtons": {
           "TranslationUpdateYesText": "Atualizar pacote",

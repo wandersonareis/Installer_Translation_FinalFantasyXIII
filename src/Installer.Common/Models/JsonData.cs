@@ -11,10 +11,11 @@ public record JsonData
         appVersion = UpdateApp.Version;
     }
 
-    public void Deconstruct(out string translationId, out string translationUrl, out string translationChangelog)
+    public void Deconstruct(out string translationId, out string translationUrl, out string translationHash, out string translationChangelog)
     {
         translationId = UpdateTranslation.TranslationId;
         translationUrl = UpdateTranslation.TranslationUrl;
+        translationHash = UpdateTranslation.Hash;
         translationChangelog = UpdateTranslation.PackageChangelog;
     }
 

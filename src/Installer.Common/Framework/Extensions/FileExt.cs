@@ -5,7 +5,7 @@ public static class FileExt
     public static bool FileIsExists(this string path)
     {
         var fi = new FileInfo(path);
-        return fi.Exists && fi.Length > 0;
+        return fi is { Exists: true, Length: > 0 };
     }
     public static bool DirectoryIsExists(this string directoryPath)
     {

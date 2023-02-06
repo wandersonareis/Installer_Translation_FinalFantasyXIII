@@ -79,9 +79,8 @@
                 AutoUpdater.RunUpdateAsAdmin = false;
 
                 await GetTranslationPackageUpdate();
-                if (GameLocationProvider.Provider()) return;
 
-                InstallerServiceProvider.GameLocationInfo = new GameLocationInfo("");
+                if (!InstallerServiceProvider.GameLocationInfo.IsValidGamePath()) GameLocationProvider.Provider();
             }
             catch (HttpRequestException httpRequestException)
             {
@@ -127,9 +126,9 @@
 
     private async Task GetTranslationPackageUpdate()
     {
-        JsonData jsonFromServer = await InstallerServiceProvider.GetJsonDataAsync();
+        (string translationId, _, string translationHash, _) = await InstallerServiceProvider.GetJsonDataAsync();
 
-        if (PackageInfo.IsValid(jsonFromServer)) return;
+        if (PackageInfo.IsValid(id: translationId, hash: translationHash)) return;
 
         Snackbar.Add(Localization.Localizer.Get("SnackMessages.TranslationUpdate"), Severity.Info, config =>
         {
