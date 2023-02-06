@@ -34,8 +34,7 @@ public class PackageInfo : IPackageInfo
         JsonData json = await _installerServiceProvider.GetJsonDataAsync();
         if (IsValid(json))
         {
-            _installerServiceProvider.InstallerConfig.TranslationId = ReadFileId();
-            JsonHelper.SerializeToFile(_installerServiceProvider.InstallerConfig, _installerServiceProvider.ConfigFile);
+            _installerServiceProvider.PersistenceRegister.SetInstalledTranslation(ReadFileId());
             return;
         }
 
@@ -44,7 +43,7 @@ public class PackageInfo : IPackageInfo
 
         _installerServiceProvider.InstallerConfig.TranslationId = json.UpdateTranslation.TranslationId;
 
-        JsonHelper.SerializeToFile(_installerServiceProvider.InstallerConfig, _installerServiceProvider.ConfigFile);
+        _installerServiceProvider.PersistenceRegister.SetInstalledTranslation(translationId);
     }
 
     private Stream TryOpen()

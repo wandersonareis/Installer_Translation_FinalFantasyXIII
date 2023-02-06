@@ -1,9 +1,6 @@
-﻿using Installer.Common;
-using Installer.Common.Framework.Extensions;
-using Installer.Common.GameLocation;
+﻿using Installer.Common.GameLocation;
 using Installer.Common.localization;
 using Installer.Common.Logger;
-using Installer.Common.Models;
 using Installer.Common.Service;
 using Installer.LightningReturnFF13.Shared.Interfaces;
 
@@ -24,23 +21,13 @@ public class GameLocationProvider : IInfoProvider
     }
     public bool Provider()
     {
-
-        _installerServiceProvider.InstallerConfig = _installerServiceProvider.ConfigFile.FileIsExists() ?
-        JsonHelper.DeserializeFromFile<InstallerConfig>(_installerServiceProvider.ConfigFile) : new InstallerConfig();
-
-        if (_installerServiceProvider.InstallerConfig!.GameLocation.DirectoryIsExists())
+        IGameLocationInfo result = new GameLocationInfo(_installerServiceProvider.PersistenceRegister.GetGamePath());
+        if (result.IsValidGamePath())
         {
-            IGameLocationInfo result = new GameLocationInfo(_installerServiceProvider.InstallerConfig.GameLocation);
-            if (result.IsValidGamePath())
-            {
-                _logger.Info(Localization.Localizer.Get("Messages.GameLocationBySettings"));
-                _installerServiceProvider.GameLocationInfo = result;
-                return true;
-            }
+            _logger.Info(Localization.Localizer.Get("Messages.GameLocationBySettings"));
+            _installerServiceProvider.GameLocationInfo = result;
+            return true;
         }
-
-        Directory.CreateDirectory(@".\Config");
-        JsonHelper.SerializeToFile(_installerServiceProvider.InstallerConfig, _installerServiceProvider.ConfigFile);
 
         return _steamGameLocation.Provider() || _userGameLocation.Provider();
     }

@@ -8,22 +8,21 @@ namespace Installer.Common.Service;
 
 public class InstallerServiceProvider : InstallerBase
 {
-    public InstallerConfig InstallerConfig;
     public IGameLocationInfo GameLocationInfo;
+    public IPersistenceRegisterProvider PersistenceRegister;
 
-    public readonly string ConfigFile;
     public readonly string ResourcesFile;
     public string UriLrff13 => DataUriLrff13;
     public JsonData JsonDataSync => DownloaderManager.GetApiJsonAsync(DataUriLrff13).GetAwaiter().GetResult();
-    
-    public InstallerServiceProvider()
+
+    public InstallerServiceProvider(IPersistenceRegisterProvider persistenceRegister)
     {
-        ConfigFile = Path.Combine(AppDirectory, "Config", "config.json");
+        PersistenceRegister = persistenceRegister;
+        GameLocationInfo = new GameLocationInfo(persistenceRegister.GetGamePath());
         ResourcesFile = Path.Combine(AppDirectory, "Resources", PackageFileName);
-        InstallerConfig = new InstallerConfig();
-        GameLocationInfo = new GameLocationInfo(InstallerConfig.GameLocation);
     }
 
     public async Task<JsonData> GetJsonDataAsync() => await DownloaderManager.GetApiJsonAsync(DataUriLrff13);
-    public string ExtractingPackageFiles(int fileCount, int total) => string.Format(Localization.Localizer.Get("Messages.ExtractingPackageFiles"),fileCount, total);
+
+    public string ExtractingPackageFiles(int fileCount, int total) => string.Format(Localization.Localizer.Get("Messages.ExtractingPackageFiles"), fileCount, total);
 }

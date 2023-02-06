@@ -1,4 +1,5 @@
 using Game.Injector;
+using Installer.Common;
 using Installer.Common.GameLocation;
 using Installer.Common.Service;
 using Installer.LightningReturnFF13.Shared.Classes;
@@ -16,6 +17,7 @@ public static class InstallerServices
     {
         services
             .AddSingleton<InstallerServiceProvider>()
+            .AddTransient<IPersistenceRegisterProvider, RegistryPersistenceProvider>()
             .AddTransient<IFolderBrowserService, FolderPicker>()
             .AddTransient<ITranslationIntaller, Shared.Classes.Installer>()
             .AddTransient<IGameFilesInserter, GameFilesInserter>()

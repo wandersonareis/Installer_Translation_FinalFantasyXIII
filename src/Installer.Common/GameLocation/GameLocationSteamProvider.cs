@@ -11,12 +11,15 @@ namespace Installer.Common.GameLocation;
 public sealed class GameLocationSteamProvider : ISteamGameLocation
 {
     private readonly InstallerServiceProvider _installerServiceProvider;
+    private readonly IPersistenceRegisterProvider _persistenceRegisterProvider;
     private static readonly ILogger Logger = LogManager.GetLogger();
 
-    public GameLocationSteamProvider(InstallerServiceProvider installerServiceProvider)
+    public GameLocationSteamProvider(InstallerServiceProvider installerServiceProvider, IPersistenceRegisterProvider persistenceRegisterProvider)
     {
         _installerServiceProvider = installerServiceProvider;
+        _persistenceRegisterProvider = persistenceRegisterProvider;
     }
+
     [SupportedOSPlatform("windows")]
     public bool Provider()
     {
@@ -39,8 +42,7 @@ public sealed class GameLocationSteamProvider : ISteamGameLocation
         }
 
         _installerServiceProvider.GameLocationInfo = result;
-        _installerServiceProvider.InstallerConfig.GameLocation = result.RootDirectory;
-        JsonHelper.SerializeToFile(_installerServiceProvider.InstallerConfig, _installerServiceProvider.ConfigFile);
+        _persistenceRegisterProvider.SetGamePath(result.RootDirectory);
         return true;
     }
 }
