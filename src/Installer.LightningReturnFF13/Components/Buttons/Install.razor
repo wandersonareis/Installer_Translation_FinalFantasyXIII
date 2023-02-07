@@ -41,7 +41,7 @@
             string totalSizeSuffix = InstallerServiceProvider.GameLocationInfo.IsValidGamePath() ?
                 Path.GetPathRoot(path: InstallerServiceProvider.GameLocationInfo.RootDirectory).GetDriveFreeSpace().SizeSuffix() : string.Empty;
 
-            string freeSpaceMessage = Localization.Localizer.GetFormat("pt", "Messages.FreeSpaceText", totalSizeSuffix);
+            string freeSpaceMessage = string.Format(Localization.Localizer.Get("Messages.FreeSpaceText"), totalSizeSuffix);
 
             DialogResult result = await ShowModal(contextText: freeSpaceMessage, buttonText: "Instalar", cancelButton: true,
                 options: new DialogOptions { MaxWidth = MaxWidth.Small });
