@@ -11,10 +11,10 @@
 		<AssemblyName>LightningReturnFF13_pt-Br</AssemblyName>
 		<PlatformTarget>x64</PlatformTarget>
 		<ApplicationIcon>LR13.ico</ApplicationIcon>
-		<Version>2.0.0</Version>
+		<Version>2.0.4</Version>
 		<Authors>WandersonAReis</Authors>
-		<AssemblyVersion>2.0.0</AssemblyVersion>
-		<FileVersion>2.0.0</FileVersion>
+		<AssemblyVersion>2.0.4</AssemblyVersion>
+		<FileVersion>2.0.4</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -32,9 +32,9 @@
 		<EmbeddedResource Include="StaticsFiles\_content\MudBlazor\MudBlazor.min.js" />
 		<Content Remove="StaticsFiles\package.json" />
 		<None Include="StaticsFiles\package.json">
-		  <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</None>
 		<Content Remove="wwwroot\css\app.min.css" />
 		<EmbeddedResource Include="wwwroot\css\app.min.css" />
