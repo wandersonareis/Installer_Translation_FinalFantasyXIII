@@ -32,12 +32,12 @@
         <MudIconButton Icon="@Icons.Material.Outlined.Settings" Color="Color.Inherit" OnClick="ShowConfigDialog" />
         <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="ShowCreditsDialog" />
     </MudToolBar>
-    <div class="container absolute bottom-4 left-7 text-blue-400/30 menu-list">
+    <div class="container absolute bottom-4 left-7 text-xl text-blue-400/30 font-semibold block list-none cursor-pointer menu-list">
         <Loading>
             <Install OnMouseover="() => ChangeImage(_spriteList[0])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Install>
         </Loading>
         <Update OnMouseover="() => ChangeImage(_spriteList[1])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Update>
-        <Uninstall OnMouseover="() => ChangeImage(_spriteList[2])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Uninstall>
+        <Uninstall OnMouseover="() => ChangeImage(_spriteList[4])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Uninstall>
     </div>
 </MudContainer>
 
@@ -205,21 +205,15 @@
     }
 
     .menu-list {
-        display: block;
-        width: 100%;
-        font-size: 1.2rem;
-        text-shadow: 2px 2px 5px rgba(59, 130, 246, 0.4);
+        text-shadow: 2px 2px 5px rgba(59, 130, 246, 0.3);
     }
 
         .menu-list li {
             display: inline-block;
             width: 100%;
-            list-style: none;
-            font-weight: bold;
-            cursor: pointer;
-            letter-spacing: .6px;
             line-height: 1.25em;
             background-image: url("images/lightning_effect.webp");
+            background-clip: text;
             -webkit-background-clip: text;
             background-size: 50%;
             background-repeat: repeat-x;
