@@ -42,19 +42,19 @@ public class PackageInfo : IPackageInfo
 
         _installerServiceProvider.PersistenceRegister.SetInstalledTranslation(translationId);
     }
-
-    private Stream TryOpen()
-    {
-        Exceptions.CheckPackageFileNotFoundException(_package);
-        return new FileStream(_package, FileMode.Open, FileAccess.Read);
-    }
-    private string ReadFileId()
+    public string ReadFileId()
     {
         using Stream stream = TryOpen();
         using BinaryReader br = new(stream);
         br.BaseStream.Position = 8;
 
         return br.ReadInt64().ToString();
+    }
+
+    private Stream TryOpen()
+    {
+        Exceptions.CheckPackageFileNotFoundException(_package);
+        return new FileStream(_package, FileMode.Open, FileAccess.Read);
     }
     private bool CompareFileId(string value)
     {

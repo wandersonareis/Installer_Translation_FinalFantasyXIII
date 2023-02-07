@@ -3,6 +3,7 @@
 public interface IPackageInfo
 {
     bool IsValid(string id, string hash);
-    void Validate();
+    string ReadFileId();
     Task GetPackageTranslation();
+    void Validate();
 }
