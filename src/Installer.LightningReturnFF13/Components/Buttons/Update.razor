@@ -10,7 +10,6 @@
 @inject IDialogService DialogService
 @inject IPackageInfo PackageInfo
 
-
 <li @onmouseover="HandleMouseover" @onmouseleave="HandleMouseleave" @onclick="Confirm">@_btnUpdate</li>
 
 
@@ -36,25 +35,19 @@
         {
             (string translationId, string appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
 
-            bool newAppVersion = InstallerServiceProvider.CheckAppVersion(appVersion);
-            string localPackageDate = Localization.Localizer.Get("Messages.DateFromLocalTranslationText") + InstallerServiceProvider.PersistenceRegister.GetDateFromInstalledTranslation();
-            string serverPackageDate = Localization.Localizer.Get("Messages.DateFromServerTranslationText") + translationId.ConvertFromUnixTimestamp();
-            string appVersionMessage = Localization.Localizer.Get("Messages.LocalAppVersion") + appVersion;
-
             var parameters = new DialogParameters
         {
-            { "NewAppVersion", newAppVersion },
-            { "AppVersion", (MarkupString)appVersionMessage },
-            { "ServerPackageDate", (MarkupString)localPackageDate },
-            { "LocalPackageDate", (MarkupString)serverPackageDate },
+            { "AppVersion", appVersion },
+            { "ServerPackageDate", translationId },
             { "ButtonText", "Instalar" },
             { "Color", Color.Success }
         };
 
-            IDialogReference? dialog = await DialogService.ShowAsync<UpdateDialog>("Confirm", parameters);
+            IDialogReference? dialog = await DialogService.ShowAsync<UpdateDialog>("Confirm", parameters, new DialogOptions { NoHeader = false });
             DialogResult? result = await dialog.Result;
 
             if (result.Canceled) return;
+
             await TranslationUpdate();
         }
         catch (Exception e)

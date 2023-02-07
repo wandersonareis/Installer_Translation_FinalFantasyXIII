@@ -1,46 +1,74 @@
-﻿<MudPaper Width="100%">
-    <MudDialog>
+﻿@using Installer.Common.localization
+@using Installer.Common.Service
+@using Installer.Common.Framework.Extensions
+@using Installer.Package
+@inject InstallerServiceProvider InstallerServiceProvider
+@inject IPackageInfo PackageInfo
+
+<MudPaper Width="100%">
+    <MudDialog Style="background-color:rgb(30 41 59)" ClassContent="bg-slate-800" ClassActions="bg-slate-800">
         <DialogContent>
             <MudContainer>
-                <MudText>@AppVersion</MudText>
-                <MudText>@ServerPackageDate</MudText>
-                <MudText>@LocalPackageDate</MudText>
+                <div class="flex gap-1">
+                    <MudText>@Localization.Localizer.Get("Messages.LocalAppVersion")</MudText>
+                    <MudText>@AppVersion</MudText>
+                </div>
+                <div class="flex gap-1">
+                    <MudText>@Localization.Localizer.Get("Messages.DateFromServerTranslationText")</MudText>
+                    <MudBadge BadgeClass="cursor-pointer" Bordered="true" Color="Color.Success" Content="@_badgeContent" OnClick="async () => await UpdatePackage()" Origin="Origin.TopCenter" Visible="@IsVisible">
+                        <MudText>@ServerPackageDate.ConvertFromUnixTimestamp()</MudText>
+                    </MudBadge>
+                </div>
+                <div class="flex gap-1">
+                    <MudText>@Localization.Localizer.Get("Messages.DateFromLocalTranslationText")</MudText>
+                    <MudText>@InstallerServiceProvider.PersistenceRegister.GetDateFromInstalledTranslation()</MudText>
+                </div>
             </MudContainer>
         </DialogContent>
         <DialogActions>
-            @if (NewAppVersion)
-            {
-                <button @onclick="Submit" class="relative inline-flex items-center justify-center p-0.5 mb-1 mr-1 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
-                    <span class="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                        @ButtonText
-                    </span>
-                </button>
-            }
-            else
-            {
-                <button @onclick="Submit" class="relative inline-flex items-center justify-center p-0.5 mb-1 mr-1 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
-                    <span @onclick="Cancel" class="relative px-3 py-1.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                        Ok
-                    </span>
-                </button>
-            }
+            <button @onclick="Cancel" class="btn-ok">
+                <span>
+                    Ok
+                </span>
+            </button>
         </DialogActions>
     </MudDialog>
 </MudPaper>
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
 
-    [Parameter] public bool NewAppVersion { get; set; }
-    [Parameter] public MarkupString AppVersion { get; set; }
-    [Parameter] public MarkupString ServerPackageDate { get; set; }
-    [Parameter] public MarkupString LocalPackageDate { get; set; }
-
-    [Parameter]
-    public string ButtonText { get; set; } = "Ok";
-
+    [Parameter] public string AppVersion { get; set; } = "0";
+    [Parameter] public string ServerPackageDate { get; set; } = string.Empty;
+    [Parameter] public string ButtonText { get; set; } = "Ok";
     [Parameter] public Color Color { get; set; }
 
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    private bool IsVisible { get; set; }
+    private readonly string _badgeContent = Localization.Localizer.Get("HomePage.Main.UpdateDialogNewPackage");
+
+    protected override void OnInitialized()
+    {
+        NewPackageVersion();
+    }
+
+    async ValueTask UpdatePackage()
+    {
+        await PackageInfo.GetPackageTranslation();
+        NewPackageVersion();
+    }
+
     void Cancel() => MudDialog.Cancel();
 
+    void NewPackageVersion()
+    {
+        if (InstallerServiceProvider.PersistenceRegister.GetDateFromInstalledTranslation()
+            .Equals(ServerPackageDate.ConvertFromUnixTimestamp(), StringComparison.Ordinal))
+        {
+            IsVisible = false;
+            StateHasChanged();
+            return;
+        }
+
+        IsVisible = true;
+        StateHasChanged();
+    }
 }
