@@ -29,8 +29,12 @@
     <MudImage Fluid="true" ObjectFit="ObjectFit.Cover" src="images\Lightning_Returns_Final_Fantasy_XIII_Logo.webp" alt="" />
     <MudImage Class="sprite" Fluid="true" ObjectFit="ObjectFit.Cover" src="@SpriteImage" alt="Sprite" />
     <MudToolBar Class="absolute top-px right-0 bg-transparent">
-        <MudIconButton Icon="@Icons.Material.Outlined.Settings" Color="Color.Inherit" OnClick="ShowConfigDialog" />
-        <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="ShowCreditsDialog" />
+        <MudTooltip Color="Color.Inherit" Style="background-color:rgb(30 41 59);" Text=@Localization.Localizer.Get("Tooltips.ConfigButton")>
+            <MudIconButton Icon="@Icons.Material.Outlined.Settings" Color="Color.Inherit" OnClick="ShowConfigDialog" />
+        </MudTooltip>
+        <MudTooltip Color="Color.Inherit" Style="background-color:rgb(30 41 59);" Text=@Localization.Localizer.Get("Tooltips.CreditsButton")>
+            <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="ShowCreditsDialog" />
+        </MudTooltip>
     </MudToolBar>
     <div class="container absolute bottom-4 left-7 text-xl text-blue-400/30 font-semibold block list-none cursor-pointer menu-list">
         <Loading>
