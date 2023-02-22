@@ -170,19 +170,19 @@
         JsonData json = InstallerServiceProvider.JsonDataSync;
         args.UpdateInfo = new UpdateInfoEventArgs
             {
-                CurrentVersion = json.UpdateApp.Version,
-                ChangelogURL = json.UpdateApp.Changelog,
-                DownloadURL = json.UpdateApp.Url,
+                CurrentVersion = json.AutoUpdateApp.Version,
+                ChangelogURL = json.AutoUpdateApp.Changelog,
+                DownloadURL = json.AutoUpdateApp.Url,
                 Mandatory = new Mandatory
                 {
-                    Value = json.UpdateApp.Mandatorys.Value,
-                    MinimumVersion = json.UpdateApp.Mandatorys.MinVersion,
-                    UpdateMode = (Mode)json.UpdateApp.Mandatorys.Mode
+                    Value = json.AutoUpdateApp.Mandatory.Value,
+                    MinimumVersion = json.AutoUpdateApp.Mandatory.MinVersion,
+                    UpdateMode = (Mode)json.AutoUpdateApp.Mandatory.Mode
                 },
                 CheckSum = new CheckSum
                 {
-                    Value = json.UpdateApp.Checksum.Value,
-                    HashingAlgorithm = json.UpdateApp.Checksum.HashingAlgorithm
+                    Value = json.AutoUpdateApp.Checksum.Value,
+                    HashingAlgorithm = json.AutoUpdateApp.Checksum.HashingAlgorithm
                 }
             };
     }

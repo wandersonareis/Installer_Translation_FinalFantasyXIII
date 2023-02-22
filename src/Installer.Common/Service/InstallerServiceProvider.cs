@@ -13,7 +13,7 @@ public class InstallerServiceProvider : InstallerBase
 
     public readonly string ResourcesFile;
     public string UriLrff13 => DataUriLrff13;
-    public JsonData JsonDataSync => DownloaderManager.GetApiJsonAsync(DataUriLrff13).GetAwaiter().GetResult();
+    public JsonData JsonDataSync => GetJsonDataAsync().GetAwaiter().GetResult();
 
     public InstallerServiceProvider(IPersistenceRegisterProvider persistenceRegister)
     {
