@@ -7,16 +7,20 @@
         @apply relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg bg-gradient-to-br from-purple-600 to-blue-500 hover:from-purple-600 hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800;
     }
 
-    .btn-cancel span {
-        @apply relative px-3 py-1.5 transition-all ease-in duration-75 bg-slate-800 text-white dark:bg-gray-900 rounded-md hover:bg-opacity-0;
-    }
+        .btn-cancel span {
+            @apply relative px-3 py-1.5 transition-all ease-in duration-75 bg-slate-800 text-white dark:bg-gray-900 rounded-md hover:bg-opacity-0;
+        }
 
     .btn-ok {
         @apply relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 hover:from-cyan-500 hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800;
     }
 
-    .btn-ok span {
-        @apply relative px-3 py-1.5 transition-all ease-in duration-75 bg-slate-800 text-white dark:bg-gray-900 rounded-md hover:bg-opacity-0 hover:text-white;
+        .btn-ok span {
+            @apply relative px-3 py-1.5 transition-all ease-in duration-75 bg-slate-800 text-white dark:bg-gray-900 rounded-md hover:bg-opacity-0 hover:text-white;
+        }
+
+    .bg-slate {
+        @apply bg-slate-800;
     }
 }
 
@@ -35,9 +39,9 @@ h1 {
     color: blue;
 }
 
-h1:focus {
-    outline: none;
-}
+    h1:focus {
+        outline: none;
+    }
 
 a,
 .btn-link {
@@ -58,12 +62,12 @@ a,
     display: block;
 }
 
-.btn-grad:hover {
-    background-position: right center;
-    /* change the direction of the change here */
-    color: #fff;
-    text-decoration: none;
-}
+    .btn-grad:hover {
+        background-position: right center;
+        /* change the direction of the change here */
+        color: #fff;
+        text-decoration: none;
+    }
 
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;
@@ -90,9 +94,9 @@ a,
     z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
