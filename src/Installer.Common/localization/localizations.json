@@ -20,7 +20,7 @@
           "HelpTextSuccess": "This directory contains the game.",
           "HelpTextError": "The selected directory does not contain the game."
         },
-        "UpdateDialogNewPackage": "New version"
+        "UpdateDialogNewPackage": "Download"
       }
     },
     "Tooltips": {
@@ -55,7 +55,7 @@
     },
     "SnackMessages": {
       "AppUpdate": "A new version of the installer is available.",
-      "TranslationUpdate": "A new version of the translation is available."
+      "TranslationUpdate": "A new version of the translation is available.\r\nClick for download."
     },
     "Warning": {
       "GameLanguageFilesNotFounded": "{0} in the language {1} does not exist!",
@@ -84,7 +84,7 @@
           "HelpTextSuccess": "Este diretório contém o jogo.",
           "HelpTextError": "O diretório que foi apontado não contém o jogo."
         },
-        "UpdateDialogNewPackage": "Nova versão"
+        "UpdateDialogNewPackage": "Baixar"
       }
     },
     "Tooltips": {
@@ -119,7 +119,7 @@
     },
     "SnackMessages": {
       "AppUpdate": "Uma nova versão do instalador está disponível.",
-      "TranslationUpdate": "Uma nova versão da tradução está disponível."
+      "TranslationUpdate": "Uma nova versão da tradução está disponível.\r\nClique aqui para baixar."
     },
     "Warning": {
       "GameLanguageFilesNotFounded": "{0} no idioma {1} não existe!",
