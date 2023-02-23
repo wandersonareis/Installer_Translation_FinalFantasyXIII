@@ -36,23 +36,22 @@
             <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="ShowCreditsDialog" />
         </MudTooltip>
     </MudToolBar>
-    <div class="container absolute bottom-4 left-7 text-xl text-blue-400/30 font-semibold block list-none cursor-pointer menu-list">
+    <ul class="container absolute bottom-4 left-7 text-xl text-blue-400/30 font-semibold block list-none cursor-pointer menu-list">
         <Loading>
             <Install OnMouseover="() => ChangeImage(_spriteList[0])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Install>
         </Loading>
         <Update OnMouseover="() => ChangeImage(_spriteList[1])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Update>
         <Uninstall OnMouseover="() => ChangeImage(_spriteList[4])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Uninstall>
-    </div>
+    </ul>
 </MudContainer>
 
 @code {
     private readonly ILogger _logger = LogManager.GetLogger();
     private string SpriteImage { get; set; } = "images/five.webp";
     private readonly IList<string> _spriteList = new List<string>(5)
-    { "images/first.webp", "images/two.webp", "images/third.webp", "images/four.webp", "images/five.webp" };
+                                    { "images/first.webp", "images/two.webp", "images/third.webp", "images/four.webp", "images/five.webp" };
 
-    private void ChangeImage(string sprite)
-    {
+    private void ChangeImage(string sprite) {
         SpriteImage = sprite;
         StateHasChanged();
     }
@@ -60,22 +59,17 @@
     private async Task ShowConfigDialog() =>
         await DialogService.ShowAsync<ConfigDialog>("Configurações", options: new DialogOptions { MaxWidth = MaxWidth.Medium });
 
-    private async Task ShowCreditsDialog()
-    {
-        var options = new DialogOptions
-            {
+    private async Task ShowCreditsDialog() {
+        var options = new DialogOptions {
                 MaxWidth = MaxWidth.Small,
                 DisableBackdropClick = true
             };
         await DialogService.ShowAsync<CreditsDialog>("Dialog", options);
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            try
-            {
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            try {
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
                 AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
 
@@ -86,12 +80,11 @@
 
                 if (!InstallerServiceProvider.GameLocationInfo.IsValidGamePath()) GameLocationProvider.Provider();
             }
-            catch (HttpRequestException httpRequestException)
-            {
+            catch (HttpRequestException httpRequestException) {
                 _logger.Error(httpRequestException, Localization.Localizer.Get("Exceptions.WriteFailed").ConvertLineBreaksToHtml());
 
                 var parameters = new DialogParameters
-                {
+                                                {
                     { "ContentText", (MarkupString)Localization.Localizer.Get("Exceptions.HttpRequestBroken")},
                     { "ButtonCancel", false }
                 };
@@ -99,25 +92,23 @@
                 await DialogService.ShowAsync<CommonDialogs>(title: httpRequestException.GetType().Name, parameters: parameters,
                     options: new DialogOptions { MaxWidth = MaxWidth.Large, NoHeader = false });
             }
-            catch (UnauthorizedAccessException accessException)
-            {
+            catch (UnauthorizedAccessException accessException) {
                 string message = Localization.Localizer.Get("Exceptions.WriteFailed").ConvertLineBreaksToHtml();
                 _logger.Error(accessException, message);
 
                 var parameters = new DialogParameters
-                {
+                                                {
                     { "ContentText", (MarkupString)accessException.Message},
                     { "ButtonCancel", false }
                 };
 
                 await DialogService.ShowAsync<CommonDialogs>(title: accessException.GetType().Name, parameters: parameters, options: new DialogOptions { MaxWidth = MaxWidth.Small, NoHeader = false });
             }
-            catch (Exception err)
-            {
+            catch (Exception err) {
                 _logger.Error(err, err.GetType().Name);
 
                 var parameters = new DialogParameters
-                {
+                                                {
                     { "ContentText", (MarkupString)err.Message},
                     { "ButtonCancel", false }
                 };
@@ -139,25 +130,22 @@
         });
     }
 
-    private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
-    {
+    #region AutoUpdate Zone
+
+    private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args) {
         if (args.Error is not null || !args.IsUpdateAvailable) return;
 
-        try
-        {
-            Snackbar.Add(Localization.Localizer.Get("SnackMessages.AppUpdate"), Severity.Info, config =>
-            {
+        try {
+            Snackbar.Add(Localization.Localizer.Get("SnackMessages.AppUpdate"), Severity.Info, config => {
                 config.RequireInteraction = true;
                 config.ShowCloseIcon = true;
-                config.Onclick = _ =>
-                {
+                config.Onclick = _ => {
                     if (AutoUpdater.DownloadUpdate(args)) Application.Exit();
                     return Task.CompletedTask;
                 };
             });
         }
-        catch (Exception err)
-        {
+        catch (Exception err) {
             _logger.Error(err, err.GetType().Name);
 
             DialogService.ShowMessageBox(
@@ -167,38 +155,33 @@
         }
     }
 
-    private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
-    {
+    private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args) {
         JsonData json = InstallerServiceProvider.JsonDataSync;
-        args.UpdateInfo = new UpdateInfoEventArgs
-            {
+        args.UpdateInfo = new UpdateInfoEventArgs {
                 CurrentVersion = json.AutoUpdateApp.Version,
                 ChangelogURL = json.AutoUpdateApp.Changelog,
                 DownloadURL = json.AutoUpdateApp.Url,
-                Mandatory = new Mandatory
-                {
+                Mandatory = new Mandatory {
                     Value = json.AutoUpdateApp.Mandatory.Value,
                     MinimumVersion = json.AutoUpdateApp.Mandatory.MinVersion,
                     UpdateMode = (Mode)json.AutoUpdateApp.Mandatory.Mode
                 },
-                CheckSum = new CheckSum
-                {
+                CheckSum = new CheckSum {
                     Value = json.AutoUpdateApp.Checksum.Value,
                     HashingAlgorithm = json.AutoUpdateApp.Checksum.HashingAlgorithm
                 }
             };
     }
 
-    readonly MudTheme _lightningReturnTheme = new()
-        {
-            PaletteDark = new PaletteDark
-            {
+    #endregion
+
+    readonly MudTheme _lightningReturnTheme = new() {
+            PaletteDark = new PaletteDark {
                 Primary = (MudColor)"#3b82f6",
                 Background = (MudColor)"#0F172A",
                 TextPrimary = (MudColor)"#3b82f6",
             }
         };
-
 }
 
 <style>
@@ -213,10 +196,11 @@
         .menu-list li {
             display: inline-block;
             width: 100%;
+            height: 100%;
             line-height: 1.25em;
             background-image: url("images/lightning_effect.webp");
-            background-clip: text;
             -webkit-background-clip: text;
+            background-clip: text;
             background-size: 50%;
             background-repeat: repeat-x;
         }
