@@ -127,14 +127,12 @@
         }
     }
 
-    private async Task GetTranslationPackageUpdate()
-    {
-        (string translationId, _, string translationHash, _) = await InstallerServiceProvider.GetJsonDataAsync();
+    private async ValueTask GetTranslationPackageUpdate() {
+        await PackageInfo.Check();
 
-        if (PackageInfo.IsValid(id: translationId, hash: translationHash)) return;
+        if (PackageInfo is { IsExists: true, IsValidMagic: true, IsValidId: true, IsValidHash: true }) return;
 
-        Snackbar.Add(Localization.Localizer.Get("SnackMessages.TranslationUpdate"), Severity.Info, config =>
-        {
+        Snackbar.Add(Localization.Localizer.Get("SnackMessages.TranslationUpdate").ConvertLineBreaksToHtml(), Severity.Info, config => {
             config.RequireInteraction = true;
             config.ShowCloseIcon = true;
             config.Onclick = async _ => { await PackageInfo.GetPackageTranslation(); };

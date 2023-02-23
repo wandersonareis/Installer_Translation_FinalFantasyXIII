@@ -2,8 +2,11 @@
 
 public interface IPackageInfo
 {
-    bool IsValid(string id, string hash);
-    string ReadFileId();
+    public bool IsExists { get; set; }
+    public bool IsValidMagic { get; set; }
+    public bool IsValidId { get; set; }
+    public bool IsValidHash { get; set; }
+    ValueTask Check();
     Task GetPackageTranslation();
     void Validate();
 }

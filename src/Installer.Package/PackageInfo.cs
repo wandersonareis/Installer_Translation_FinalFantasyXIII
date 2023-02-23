@@ -2,6 +2,7 @@
 using Installer.Common.Downloader;
 using Installer.Common.Framework;
 using Installer.Common.Framework.Extensions;
+using Installer.Common.localization;
 using Installer.Common.Service;
 
 namespace Installer.Package;
@@ -11,14 +12,24 @@ public class PackageInfo : IPackageInfo
     private readonly InstallerServiceProvider _installerServiceProvider;
     private readonly string _package;
 
+    public bool IsExists { get; set; }
+    public bool IsValidMagic { get; set; }
+    public bool IsValidId { get; set; }
+    public bool IsValidHash { get; set; }
+
     public PackageInfo(InstallerServiceProvider installerServiceProvider)
     {
         _installerServiceProvider = installerServiceProvider;
         _package = _installerServiceProvider.ResourcesFile;
     }
-    public bool IsValid(string id, string hash)
+
+    public async ValueTask Check()
     {
-        return _package.FileIsExists() && CompareFileId(id) && CompareToFileHash(hash);
+        (string translationId, _, string translationHash, _) = await _installerServiceProvider.GetJsonDataAsync();
+        IsExists = _package.FileIsExists();
+        IsValidMagic = CompareMagic();
+        IsValidId = CompareFileId(translationId);
+        IsValidHash = CompareToFileHash(translationHash);
     }
 
     public void Validate()
@@ -29,9 +40,10 @@ public class PackageInfo : IPackageInfo
 
     public async Task GetPackageTranslation()
     {
-        (string translationId, string translationUrl, string translationHash, _) = await _installerServiceProvider.GetJsonDataAsync();
+        (string translationId, string translationUrl, _, _) = await _installerServiceProvider.GetJsonDataAsync();
 
-        if (IsValid(id: translationId, hash: translationHash))
+        await Check();
+        if (IsExists && IsValidMagic && IsValidId && IsValidHash)
         {
             _installerServiceProvider.PersistenceRegister.SetInstalledTranslation(ReadFileId());
             return;
@@ -55,6 +67,15 @@ public class PackageInfo : IPackageInfo
     {
         Exceptions.CheckPackageFileNotFoundException(_package);
         return new FileStream(_package, FileMode.Open, FileAccess.Read);
+    }
+
+    private bool CompareMagic()
+    {
+        if (!_package.FileIsExists()) return false;
+        using Stream stream = TryOpen();
+        using BinaryReader br = new(stream);
+        long magic = br.ReadInt64();
+        return magic == 0x494949584646524c;
     }
     private bool CompareFileId(string value)
     {

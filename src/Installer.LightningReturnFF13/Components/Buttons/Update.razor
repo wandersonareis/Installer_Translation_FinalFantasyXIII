@@ -76,7 +76,9 @@
             string.IsNullOrEmpty(translationChangelog) ?
                 htmlTranslationUpdateMessage : $"{htmlTranslationUpdateMessage}\n\nAté agora:\n{translationChangelog}".ConvertLineBreaksToHtml();
 
-        if (!PackageInfo.IsValid(id: translationId, hash: translationHash))
+        await PackageInfo.Check();
+
+        if (PackageInfo is { IsExists: false, IsValidMagic: false, IsValidId: false, IsValidHash: false })
         {
             bool? result = await DialogService.ShowMessageBox(
                 InstallerBase.MessageTitle,
