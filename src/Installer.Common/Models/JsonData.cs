@@ -5,9 +5,10 @@ namespace Installer.Common.Models;
 
 public record JsonData
 {
-    public void Deconstruct(out string translationId, out string appVersion)
+    public void Deconstruct(out string translationId, out string translationChangelog, out string appVersion)
     {
         translationId = UpdateTranslation.TranslationId;
+        translationChangelog = UpdateTranslation.TranslationChangelog;
         appVersion = AutoUpdateApp.Version;
     }
 
@@ -16,7 +17,7 @@ public record JsonData
         translationId = UpdateTranslation.TranslationId;
         translationUrl = UpdateTranslation.TranslationUrl;
         translationHash = UpdateTranslation.Hash;
-        translationChangelog = UpdateTranslation.PackageChangelog;
+        translationChangelog = UpdateTranslation.TranslationChangelog;
     }
 
     [Required]
@@ -28,7 +29,7 @@ public record JsonData
     public AutoUpdateTranslation UpdateTranslation { get; init; } = null!;
 }
 
-public record AutoUpdateTranslation(string Hash, string PackageChangelog, string TranslationId, string TranslationUrl);
+public record AutoUpdateTranslation(string Hash, string TranslationChangelog, string TranslationId, string TranslationUrl);
 public record AutoUpdateApp(string Version, string Url, string Changelog, AutoUpdateAppMandatory Mandatory, AutoUpdateAppChecksum Checksum);
 public record AutoUpdateAppMandatory(string MinVersion, int Mode, bool Value);
 public record AutoUpdateAppChecksum(string Value, string HashingAlgorithm);

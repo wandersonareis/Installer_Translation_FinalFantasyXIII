@@ -46,29 +46,23 @@ public class RegistryPersistenceProvider : IPersistenceRegisterProvider
     }
 
     [SupportedOSPlatform("windows")]
-    public string GetInstalledTranslation()
+    public long GetInstalledTranslation()
     {
         using RegistryKey? updateKey = Registry.CurrentUser.OpenSubKey(RegistryLocation);
         object? translationIdValue = updateKey?.GetValue(TranslationIdValue);
 
-        if (translationIdValue == null) return "0";
+        if (translationIdValue == null) return 0;
 
         try
         {
-            return translationIdValue.ToString()!;
+            return long.Parse(TranslationIdValue);
         }
         catch (FormatException)
         {
             // ignored
         }
 
-        return "0";
-    }
-
-    [SupportedOSPlatform("windows")]
-    public string GetDateFromInstalledTranslation()
-    {
-        return GetInstalledTranslation().ConvertFromUnixTimestamp();
+        return 0;
     }
 
     [SupportedOSPlatform("windows")]
