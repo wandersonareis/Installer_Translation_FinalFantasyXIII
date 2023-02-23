@@ -20,30 +20,29 @@
     public EventCallback<string> OnMouseLeave { get; set; }
 
     private string _btnUpdate = Localization.Localizer.Get("HomePage.Main.Buttons.Update");
-    private void HandleMouseover()
-    {
-        OnMouseover.InvokeAsync(string.Empty);
-    }
-    private void HandleMouseleave()
-    {
-        OnMouseover.InvokeAsync(string.Empty);
-    }
+
+    private void HandleMouseover() => OnMouseover.InvokeAsync(string.Empty);
+
+    private void HandleMouseleave() => OnMouseover.InvokeAsync(string.Empty);
 
     private async Task Confirm()
     {
         try
         {
-            (string translationId, string appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
+            (string translationId, string translationChangelog, string appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
 
             var parameters = new DialogParameters
         {
             { "AppVersion", appVersion },
             { "ServerPackageDate", translationId },
+            { "TranslationChangelog", translationChangelog },
             { "ButtonText", "Instalar" },
             { "Color", Color.Success }
         };
 
-            IDialogReference? dialog = await DialogService.ShowAsync<UpdateDialog>("Confirm", parameters, new DialogOptions { NoHeader = false });
+            IDialogReference? dialog = await DialogService.ShowAsync<UpdateDialog>("Confirm", parameters,
+                new DialogOptions { NoHeader = true, MaxWidth = MaxWidth.Small });
+
             DialogResult? result = await dialog.Result;
 
             if (result.Canceled) return;
@@ -70,7 +69,7 @@
 
     private async Task TranslationUpdate()
     {
-        (string translationId, _, string translationHash, string translationChangelog) = await InstallerServiceProvider.GetJsonDataAsync();
+        (_, _, _, string translationChangelog) = await InstallerServiceProvider.GetJsonDataAsync();
         string htmlTranslationUpdateMessage = Localization.Localizer.Get("Messages.TranslationUpdateMessage").ConvertLineBreaksToHtml();
         string translationUpdateMessage =
             string.IsNullOrEmpty(translationChangelog) ?
