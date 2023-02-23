@@ -49,7 +49,7 @@
     private readonly ILogger _logger = LogManager.GetLogger();
     private string SpriteImage { get; set; } = "images/five.webp";
     private readonly IList<string> _spriteList = new List<string>(5)
-                                    { "images/first.webp", "images/two.webp", "images/third.webp", "images/four.webp", "images/five.webp" };
+                                        { "images/first.webp", "images/two.webp", "images/third.webp", "images/four.webp", "images/five.webp" };
 
     private void ChangeImage(string sprite) {
         SpriteImage = sprite;
@@ -84,7 +84,7 @@
                 _logger.Error(httpRequestException, Localization.Localizer.Get("Exceptions.WriteFailed").ConvertLineBreaksToHtml());
 
                 var parameters = new DialogParameters
-                                                {
+                                                    {
                     { "ContentText", (MarkupString)Localization.Localizer.Get("Exceptions.HttpRequestBroken")},
                     { "ButtonCancel", false }
                 };
@@ -97,7 +97,7 @@
                 _logger.Error(accessException, message);
 
                 var parameters = new DialogParameters
-                                                {
+                                                    {
                     { "ContentText", (MarkupString)accessException.Message},
                     { "ButtonCancel", false }
                 };
@@ -108,7 +108,7 @@
                 _logger.Error(err, err.GetType().Name);
 
                 var parameters = new DialogParameters
-                                                {
+                                                    {
                     { "ContentText", (MarkupString)err.Message},
                     { "ButtonCancel", false }
                 };
