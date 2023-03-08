@@ -21,7 +21,7 @@
                 </div>
                 <div class="flex gap-1">
                     <MudText Class="text-blue-300">@Localization.Localizer.Get("Messages.DateFromLocalTranslationText")</MudText>
-                    <MudText>@InstallerServiceProvider.PersistenceRegister.GetInstalledTranslation().ConvertFromUnixTimestamp()</MudText>
+                    <MudText>@InstalledVersion.ConvertFromUnixTimestamp()</MudText>
                 </div>
             </MudContainer>
             <MudContainer Class="mt-4">
@@ -48,29 +48,29 @@
     [Parameter] public Color Color { get; set; }
 
     private bool IsVisible { get; set; }
+    private long InstalledVersion { get; set; }
     private readonly string _badgeContent = Localization.Localizer.Get("HomePage.Main.UpdateDialogNewPackage");
 
     protected override void OnInitialized() => NewPackageVersion();
 
-    async ValueTask UpdatePackage()
-    {
+    async ValueTask UpdatePackage() {
         await PackageInfo.GetPackageTranslation();
         NewPackageVersion();
     }
 
     void Cancel() => MudDialog.Cancel();
 
-    void NewPackageVersion()
-    {
-        long installedVersion = InstallerServiceProvider.PersistenceRegister.GetInstalledTranslation();
-        if (long.Parse(ServerPackageDate) < installedVersion)
-        {
+    void NewPackageVersion() {
+        InstalledVersion = InstallerServiceProvider.PersistenceRegister.GetInstalledTranslation();
+
+        if (long.TryParse(ServerPackageDate, out long serverPackageDateValue) && InstalledVersion <= serverPackageDateValue) {
             IsVisible = false;
-            StateHasChanged();
-            return;
+        }
+        else {
+            IsVisible = true;
         }
 
-        IsVisible = true;
         StateHasChanged();
     }
+
 }
