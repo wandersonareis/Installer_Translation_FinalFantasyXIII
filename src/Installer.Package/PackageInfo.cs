@@ -21,7 +21,7 @@ public class PackageInfo : IPackageInfo {
     }
 
     public async ValueTask Check() {
-        (string translationId, _, string translationHash, _) = await _installerServiceProvider.GetJsonDataAsync();
+        (long translationId, _, string translationHash, _) = await _installerServiceProvider.GetJsonDataAsync();
         IsExists = _package.FileIsExists();
         IsValidMagic = CompareMagic();
         IsValidId = CompareFileId(translationId);
@@ -34,7 +34,7 @@ public class PackageInfo : IPackageInfo {
     }
 
     public async Task GetPackageTranslation() {
-        (string translationId, string translationUrl, _, _) = await _installerServiceProvider.GetJsonDataAsync();
+        (long translationId, string translationUrl, _, _) = await _installerServiceProvider.GetJsonDataAsync();
 
         await Check();
         if (IsExists && IsValidMagic && IsValidId && IsValidHash) {
@@ -47,12 +47,12 @@ public class PackageInfo : IPackageInfo {
 
         _installerServiceProvider.PersistenceRegister.SetInstalledTranslation(translationId);
     }
-    public string ReadFileId() {
+    public long ReadFileId() {
         using Stream stream = TryOpen();
         using BinaryReader br = new(stream);
         br.BaseStream.Position = 8;
 
-        return br.ReadInt64().ToString();
+        return br.ReadInt64();
     }
 
     private Stream TryOpen() {
@@ -67,12 +67,9 @@ public class PackageInfo : IPackageInfo {
         long magic = br.ReadInt64();
         return magic == 0x494949584646524c;
     }
-    private bool CompareFileId(string value) {
-        if (!_package.FileIsExists()) return false;
 
-        using Stream stream = TryOpen();
-
-        return stream.Length >= 9367000 && ReadFileId().Equals(value, StringComparison.OrdinalIgnoreCase);
+    private bool CompareFileId(long value) {
+        return _package.FileIsExists() && ReadFileId() >= value;
     }
     private bool CompareToFileHash(string hashSource) {
         if (!_package.FileIsExists()) return false;

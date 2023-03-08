@@ -25,14 +25,12 @@
 
     private void HandleMouseleave() => OnMouseover.InvokeAsync(string.Empty);
 
-    private async Task Confirm()
-    {
-        try
-        {
-            (string translationId, string translationChangelog, string appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
+    private async Task Confirm() {
+        try {
+            (long translationId, string translationChangelog, string appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
 
             var parameters = new DialogParameters
-        {
+                            {
             { "AppVersion", appVersion },
             { "ServerPackageDate", translationId },
             { "TranslationChangelog", translationChangelog },
@@ -49,16 +47,14 @@
 
             await TranslationUpdate();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             var errorParameters = new DialogParameters
-            {
+                                {
                 { "ContentText", (MarkupString)e.Message },
                 { "ButtonCancel", false }
             };
 
-            var errorOptions = new DialogOptions
-                {
+            var errorOptions = new DialogOptions {
                     CloseButton = false,
                     MaxWidth = MaxWidth.Large,
                     NoHeader = false
@@ -67,8 +63,7 @@
         }
     }
 
-    private async Task TranslationUpdate()
-    {
+    private async Task TranslationUpdate() {
         (_, _, _, string translationChangelog) = await InstallerServiceProvider.GetJsonDataAsync();
         string htmlTranslationUpdateMessage = Localization.Localizer.Get("Messages.TranslationUpdateMessage").ConvertLineBreaksToHtml();
         string translationUpdateMessage =
@@ -77,16 +72,14 @@
 
         await PackageInfo.Check();
 
-        if (PackageInfo is { IsExists: false, IsValidMagic: false, IsValidId: false, IsValidHash: false })
-        {
+        if (PackageInfo is { IsExists: false, IsValidMagic: false, IsValidId: false, IsValidHash: false }) {
             bool? result = await DialogService.ShowMessageBox(
                 InstallerBase.MessageTitle,
                 translationUpdateMessage,
                 yesText: Localization.Localizer.Get("HomePage.Main.MessageBoxButtons.TranslationUpdateYesText"),
                 cancelText: Localization.Localizer.Get("HomePage.Main.MessageBoxButtons.TranslationUpdateCancelText"));
 
-            if (result is true)
-            {
+            if (result is true) {
                 await PackageInfo.GetPackageTranslation();
             }
         }

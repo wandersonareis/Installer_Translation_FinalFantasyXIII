@@ -18,7 +18,7 @@ public class RegistryPersistenceProvider : IPersistenceRegisterProvider {
     private const string TranslationIdValue = "TranslationId";
 
     public RegistryPersistenceProvider() {
-        RegistryLocation = $@"Software\{Localization.Localizer.Get("HomePage.Title")}\AutoUpdater"; ;
+        RegistryLocation = $@"Software\{Localization.Localizer.Get("HomePage.Title")}\AutoUpdater";
     }
 
     [SupportedOSPlatform("windows")]
@@ -53,7 +53,7 @@ public class RegistryPersistenceProvider : IPersistenceRegisterProvider {
     }
 
     [SupportedOSPlatform("windows")]
-    public void SetInstalledTranslation(string id) {
+    public void SetInstalledTranslation(long id) {
         using RegistryKey autoUpdaterKey = Registry.CurrentUser.CreateSubKey(RegistryLocation);
         autoUpdaterKey.SetValue(TranslationIdValue, id);
     }

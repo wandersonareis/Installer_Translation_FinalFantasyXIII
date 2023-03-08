@@ -42,7 +42,7 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = null!;
 
     [Parameter] public string AppVersion { get; set; } = "0";
-    [Parameter] public string ServerPackageDate { get; set; } = string.Empty;
+    [Parameter] public long ServerPackageDate { get; set; }
     [Parameter] public string TranslationChangelog { get; set; } = string.Empty;
     [Parameter] public string ButtonText { get; set; } = "Ok";
     [Parameter] public Color Color { get; set; }
@@ -63,12 +63,7 @@
     void NewPackageVersion() {
         InstalledVersion = InstallerServiceProvider.PersistenceRegister.GetInstalledTranslation();
 
-        if (long.TryParse(ServerPackageDate, out long serverPackageDateValue) && InstalledVersion <= serverPackageDateValue) {
-            IsVisible = false;
-        }
-        else {
-            IsVisible = true;
-        }
+        IsVisible = InstalledVersion > ServerPackageDate;
 
         StateHasChanged();
     }
