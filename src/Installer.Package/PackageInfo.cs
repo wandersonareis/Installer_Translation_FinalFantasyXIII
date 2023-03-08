@@ -2,13 +2,11 @@
 using Installer.Common.Downloader;
 using Installer.Common.Framework;
 using Installer.Common.Framework.Extensions;
-using Installer.Common.localization;
 using Installer.Common.Service;
 
 namespace Installer.Package;
 
-public class PackageInfo : IPackageInfo
-{
+public class PackageInfo : IPackageInfo {
     private readonly InstallerServiceProvider _installerServiceProvider;
     private readonly string _package;
 
@@ -17,14 +15,12 @@ public class PackageInfo : IPackageInfo
     public bool IsValidId { get; set; }
     public bool IsValidHash { get; set; }
 
-    public PackageInfo(InstallerServiceProvider installerServiceProvider)
-    {
+    public PackageInfo(InstallerServiceProvider installerServiceProvider) {
         _installerServiceProvider = installerServiceProvider;
         _package = _installerServiceProvider.ResourcesFile;
     }
 
-    public async ValueTask Check()
-    {
+    public async ValueTask Check() {
         (string translationId, _, string translationHash, _) = await _installerServiceProvider.GetJsonDataAsync();
         IsExists = _package.FileIsExists();
         IsValidMagic = CompareMagic();
@@ -32,19 +28,16 @@ public class PackageInfo : IPackageInfo
         IsValidHash = CompareToFileHash(translationHash);
     }
 
-    public void Validate()
-    {
+    public void Validate() {
         Exceptions.CheckPackageFileNotFoundException(_package);
         Exceptions.WrongMagicException(_installerServiceProvider.ResourcesFile);
     }
 
-    public async Task GetPackageTranslation()
-    {
+    public async Task GetPackageTranslation() {
         (string translationId, string translationUrl, _, _) = await _installerServiceProvider.GetJsonDataAsync();
 
         await Check();
-        if (IsExists && IsValidMagic && IsValidId && IsValidHash)
-        {
+        if (IsExists && IsValidMagic && IsValidId && IsValidHash) {
             _installerServiceProvider.PersistenceRegister.SetInstalledTranslation(ReadFileId());
             return;
         }
@@ -54,8 +47,7 @@ public class PackageInfo : IPackageInfo
 
         _installerServiceProvider.PersistenceRegister.SetInstalledTranslation(translationId);
     }
-    public string ReadFileId()
-    {
+    public string ReadFileId() {
         using Stream stream = TryOpen();
         using BinaryReader br = new(stream);
         br.BaseStream.Position = 8;
@@ -63,30 +55,26 @@ public class PackageInfo : IPackageInfo
         return br.ReadInt64().ToString();
     }
 
-    private Stream TryOpen()
-    {
+    private Stream TryOpen() {
         Exceptions.CheckPackageFileNotFoundException(_package);
         return new FileStream(_package, FileMode.Open, FileAccess.Read);
     }
 
-    private bool CompareMagic()
-    {
+    private bool CompareMagic() {
         if (!_package.FileIsExists()) return false;
         using Stream stream = TryOpen();
         using BinaryReader br = new(stream);
         long magic = br.ReadInt64();
         return magic == 0x494949584646524c;
     }
-    private bool CompareFileId(string value)
-    {
+    private bool CompareFileId(string value) {
         if (!_package.FileIsExists()) return false;
 
         using Stream stream = TryOpen();
 
         return stream.Length >= 9367000 && ReadFileId().Equals(value, StringComparison.OrdinalIgnoreCase);
     }
-    private bool CompareToFileHash(string hashSource)
-    {
+    private bool CompareToFileHash(string hashSource) {
         if (!_package.FileIsExists()) return false;
 
         using Stream stream = TryOpen();
