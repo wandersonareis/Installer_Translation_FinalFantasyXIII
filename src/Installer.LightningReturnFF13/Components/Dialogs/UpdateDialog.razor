@@ -54,7 +54,7 @@
     protected override void OnInitialized() => NewPackageVersion();
 
     async ValueTask UpdatePackage() {
-        await PackageInfo.GetPackageTranslation();
+        await PackageInfo.DownloadTranslationPackage();
         NewPackageVersion();
     }
 

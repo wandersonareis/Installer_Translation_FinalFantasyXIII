@@ -21,21 +21,25 @@
                    DisableBackdropClick="true"
                    NoHeader="true"
                    Position="DialogPosition.Center"
-                   CloseOnEscapeKey="true" />
-<MudThemeProvider IsDarkMode="true" Theme="_lightningReturnTheme" />
-<MudSnackbarProvider />
+                   CloseOnEscapeKey="true"/>
+<MudThemeProvider IsDarkMode="true" Theme="_lightningReturnTheme"/>
+<MudSnackbarProvider/>
 
 <MudContainer Style="all: unset;">
-    <MudImage Fluid="true" ObjectFit="ObjectFit.Cover" src="images\Lightning_Returns_Final_Fantasy_XIII_Logo.webp" alt="" />
-    <MudImage Class="sprite" Fluid="true" ObjectFit="ObjectFit.Cover" src="@SpriteImage" alt="Sprite" />
+    <MudImage Fluid="true" ObjectFit="ObjectFit.Cover" src="images\Lightning_Returns_Final_Fantasy_XIII_Logo.webp" alt=""/>
+    <MudImage Class="sprite" Fluid="true" ObjectFit="ObjectFit.Cover" src="@SpriteImage" alt="Sprite"/>
     <MudToolBar Class="absolute top-px right-0 bg-transparent">
         <MudTooltip Color="Color.Inherit" Style="background-color:rgb(30 41 59);" Text=@Localization.Localizer.Get("Tooltips.ConfigButton")>
-            <MudIconButton Icon="@Icons.Material.Outlined.Settings" Color="Color.Inherit" OnClick="ShowConfigDialog" />
+            <MudIconButton Icon="@Icons.Material.Outlined.Settings" Color="Color.Inherit" OnClick="ShowConfigDialog"/>
         </MudTooltip>
         <MudTooltip Color="Color.Inherit" Style="background-color:rgb(30 41 59);" Text=@Localization.Localizer.Get("Tooltips.CreditsButton")>
-            <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="ShowCreditsDialog" />
+            <MudIconButton Icon="@Icons.Material.Outlined.Info" Color="Color.Inherit" OnClick="ShowCreditsDialog"/>
         </MudTooltip>
     </MudToolBar>
+        <div class="flex absolute top-px left-3">
+            <MudText Class="text-gray-300/30">V</MudText>
+        <MudText Class="text-gray-300/30">@_appVersion</MudText>
+        </div>
     <ul class="container absolute bottom-4 left-7 text-xl text-blue-400/30 font-semibold block list-none cursor-pointer menu-list">
         <Loading>
             <Install OnMouseover="() => ChangeImage(_spriteList[0])" OnMouseLeave="() => ChangeImage(_spriteList[4])"></Install>
@@ -47,11 +51,15 @@
 
 @code {
     private readonly ILogger _logger = LogManager.GetLogger();
-    private string SpriteImage { get; set; } = "images/five.webp";
-    private readonly IList<string> _spriteList = new List<string>(5)
-                                        { "images/first.webp", "images/two.webp", "images/third.webp", "images/four.webp", "images/five.webp" };
+    private readonly string _appVersion = Application.ProductVersion;
 
-    private void ChangeImage(string sprite) {
+    private string SpriteImage { get; set; } = "images/five.webp";
+
+    private readonly IList<string> _spriteList = new List<string>(5)
+    { "images/first.webp", "images/two.webp", "images/third.webp", "images/four.webp", "images/five.webp" };
+
+    private void ChangeImage(string sprite)
+    {
         SpriteImage = sprite;
         StateHasChanged();
     }
@@ -59,17 +67,22 @@
     private async Task ShowConfigDialog() =>
         await DialogService.ShowAsync<ConfigDialog>("Configurações", options: new DialogOptions { MaxWidth = MaxWidth.Medium });
 
-    private async Task ShowCreditsDialog() {
-        var options = new DialogOptions {
-                MaxWidth = MaxWidth.Small,
-                DisableBackdropClick = true
-            };
+    private async Task ShowCreditsDialog()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            DisableBackdropClick = true
+        };
         await DialogService.ShowAsync<CreditsDialog>("Dialog", options);
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            try {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            try
+            {
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
                 AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
 
@@ -80,36 +93,39 @@
 
                 if (!InstallerServiceProvider.GameLocationInfo.IsValidGamePath()) GameLocationProvider.Provider();
             }
-            catch (HttpRequestException httpRequestException) {
+            catch (HttpRequestException httpRequestException)
+            {
                 _logger.Error(httpRequestException, Localization.Localizer.Get("Exceptions.WriteFailed").ConvertLineBreaksToHtml());
 
                 var parameters = new DialogParameters
-                                                    {
-                    { "ContentText", (MarkupString)Localization.Localizer.Get("Exceptions.HttpRequestBroken")},
+                {
+                    { "ContentText", (MarkupString)Localization.Localizer.Get("Exceptions.HttpRequestBroken") },
                     { "ButtonCancel", false }
                 };
 
                 await DialogService.ShowAsync<CommonDialogs>(title: httpRequestException.GetType().Name, parameters: parameters,
                     options: new DialogOptions { MaxWidth = MaxWidth.Large, NoHeader = false });
             }
-            catch (UnauthorizedAccessException accessException) {
-                string message = Localization.Localizer.Get("Exceptions.WriteFailed").ConvertLineBreaksToHtml();
+            catch (UnauthorizedAccessException accessException)
+            {
+                var message = Localization.Localizer.Get("Exceptions.WriteFailed").ConvertLineBreaksToHtml();
                 _logger.Error(accessException, message);
 
                 var parameters = new DialogParameters
-                                                    {
-                    { "ContentText", (MarkupString)accessException.Message},
+                {
+                    { "ContentText", (MarkupString)accessException.Message },
                     { "ButtonCancel", false }
                 };
 
                 await DialogService.ShowAsync<CommonDialogs>(title: accessException.GetType().Name, parameters: parameters, options: new DialogOptions { MaxWidth = MaxWidth.Small, NoHeader = false });
             }
-            catch (Exception err) {
+            catch (Exception err)
+            {
                 _logger.Error(err, err.GetType().Name);
 
                 var parameters = new DialogParameters
-                                                    {
-                    { "ContentText", (MarkupString)err.Message},
+                {
+                    { "ContentText", (MarkupString)err.Message },
                     { "ButtonCancel", false }
                 };
 
@@ -118,34 +134,62 @@
         }
     }
 
-    private async ValueTask GetTranslationPackageUpdate() {
+    private async ValueTask GetTranslationPackageUpdate()
+    {
         await PackageInfo.Check();
 
-        if (PackageInfo is { IsExists: true, IsValidMagic: true, IsValidId: true, IsValidHash: true }) return;
-
-        Snackbar.Add(Localization.Localizer.Get("SnackMessages.TranslationUpdate").ConvertLineBreaksToHtml(), Severity.Info, config => {
-            config.RequireInteraction = true;
-            config.ShowCloseIcon = true;
-            config.Onclick = async _ => { await PackageInfo.GetPackageTranslation(); };
-        });
+        switch (PackageInfo)
+        {
+            case { IsExists: false }:
+                await PackageInfo.DownloadTranslationPackage();
+                break;
+            case { IsValidMagic: false }:
+                await PackageInfo.DownloadTranslationPackage();
+                break;
+            case { IsValidId: false }:
+                await PackageInfo.DownloadTranslationPackage();
+                break;
+            case { IsExists: true, IsValidMagic: true, IsValidId: true, IsValidHash: true }:
+                break;
+            default:
+                Snackbar.Add(Localization.Localizer.Get("SnackMessages.TranslationUpdate").ConvertLineBreaksToHtml(), Severity.Info, config =>
+                {
+                    config.RequireInteraction = true;
+                    config.ShowCloseIcon = true;
+                    config.Onclick = async _ => { await PackageInfo.DownloadTranslationPackage(); };
+                });
+                break;
+        }
     }
 
     #region AutoUpdate Zone
 
-    private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args) {
-        if (args.Error is not null || !args.IsUpdateAvailable) return;
+    private void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
+    {
+        if (args.Error is not null || args is { IsUpdateAvailable: false }) return;
 
-        try {
-            Snackbar.Add(Localization.Localizer.Get("SnackMessages.AppUpdate"), Severity.Info, config => {
+        if (args is { IsUpdateAvailable: true, Mandatory.Value: true })
+        {
+            AutoUpdater.DownloadUpdate(args);
+            Application.Exit();
+            return;
+        }
+
+        try
+        {
+            Snackbar.Add(Localization.Localizer.Get("SnackMessages.AppUpdate"), Severity.Info, config =>
+            {
                 config.RequireInteraction = true;
                 config.ShowCloseIcon = true;
-                config.Onclick = _ => {
+                config.Onclick = _ =>
+                {
                     if (AutoUpdater.DownloadUpdate(args)) Application.Exit();
                     return Task.CompletedTask;
                 };
             });
         }
-        catch (Exception err) {
+        catch (Exception err)
+        {
             _logger.Error(err, err.GetType().Name);
 
             DialogService.ShowMessageBox(
@@ -155,33 +199,40 @@
         }
     }
 
-    private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args) {
+    private void AutoUpdaterOnParseUpdateInfoEvent(ParseUpdateInfoEventArgs args)
+    {
         JsonData json = InstallerServiceProvider.JsonDataSync;
-        args.UpdateInfo = new UpdateInfoEventArgs {
-                CurrentVersion = json.AutoUpdateApp.Version,
-                ChangelogURL = json.AutoUpdateApp.Changelog,
-                DownloadURL = json.AutoUpdateApp.Url,
-                Mandatory = new Mandatory {
-                    Value = json.AutoUpdateApp.Mandatory.Value,
-                    MinimumVersion = json.AutoUpdateApp.Mandatory.MinVersion,
-                    UpdateMode = (Mode)json.AutoUpdateApp.Mandatory.Mode
-                },
-                CheckSum = new CheckSum {
-                    Value = json.AutoUpdateApp.Checksum.Value,
-                    HashingAlgorithm = json.AutoUpdateApp.Checksum.HashingAlgorithm
-                }
-            };
+        args.UpdateInfo = new UpdateInfoEventArgs
+        {
+            CurrentVersion = json.AutoUpdateApp.Version,
+            ChangelogURL = json.AutoUpdateApp.Changelog,
+            DownloadURL = json.AutoUpdateApp.Url,
+            Mandatory = new Mandatory
+            {
+                Value = json.AutoUpdateApp.Mandatory.Value,
+                MinimumVersion = json.AutoUpdateApp.Mandatory.MinVersion,
+                UpdateMode = (Mode)json.AutoUpdateApp.Mandatory.Mode
+            },
+            CheckSum = new CheckSum
+            {
+                Value = json.AutoUpdateApp.Checksum.Value,
+                HashingAlgorithm = json.AutoUpdateApp.Checksum.HashingAlgorithm
+            }
+        };
     }
 
     #endregion
 
-    readonly MudTheme _lightningReturnTheme = new() {
-            PaletteDark = new PaletteDark {
-                Primary = (MudColor)"#3b82f6",
-                Background = (MudColor)"#0F172A",
-                TextPrimary = (MudColor)"#3b82f6",
-            }
-        };
+    readonly MudTheme _lightningReturnTheme = new()
+    {
+        PaletteDark = new PaletteDark
+        {
+            Primary = (MudColor)"#3b82f6",
+            Background = (MudColor)"#0F172A",
+            TextPrimary = (MudColor)"#3b82f6",
+        }
+    };
+
 }
 
 <style>

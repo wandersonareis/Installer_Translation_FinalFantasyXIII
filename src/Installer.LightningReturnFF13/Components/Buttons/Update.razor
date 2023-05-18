@@ -27,7 +27,7 @@
 
     private async Task Confirm() {
         try {
-            (long translationId, string translationChangelog, string appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
+            var (translationId, translationChangelog, appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
 
             var parameters = new DialogParameters
                             {
@@ -80,7 +80,7 @@
                 cancelText: Localization.Localizer.Get("HomePage.Main.MessageBoxButtons.TranslationUpdateCancelText"));
 
             if (result is true) {
-                await PackageInfo.GetPackageTranslation();
+                await PackageInfo.DownloadTranslationPackage();
             }
         }
     }

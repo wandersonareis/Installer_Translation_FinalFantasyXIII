@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="2.5.0" />
+    <PackageReference Include="GameFinder.StoreHandlers.Steam" Version="2.6.0" />
     <PackageReference Include="libc.translation" Version="6.1.2" />
   </ItemGroup>
 

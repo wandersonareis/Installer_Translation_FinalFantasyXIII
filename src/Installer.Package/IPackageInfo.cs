@@ -7,6 +7,6 @@ public interface IPackageInfo {
     public bool IsValidHash { get; set; }
     ValueTask Check();
     long ReadFileId();
-    Task GetPackageTranslation();
+    Task DownloadTranslationPackage();
     void Validate();
 }

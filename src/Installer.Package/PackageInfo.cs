@@ -33,7 +33,7 @@ public class PackageInfo : IPackageInfo {
         Exceptions.WrongMagicException(_installerServiceProvider.ResourcesFile);
     }
 
-    public async Task GetPackageTranslation() {
+    public async Task DownloadTranslationPackage() {
         (long translationId, string translationUrl, _, _) = await _installerServiceProvider.GetJsonDataAsync();
 
         await Check();
