@@ -3,6 +3,7 @@ using Installer.Common.Logger;
 using Installer.Common.Models;
 using Installer.LightningReturnFF13.Services;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 
@@ -15,8 +16,9 @@ public partial class LightningReturnFf13 : Form
     public LightningReturnFf13()
     {
         LightningReturnFf13_Load();
-
+        var config = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("wwwroot/appsettings.json", optional: true, reloadOnChange: true).Build();
         var services = new ServiceCollection();
+        services.AddSingleton<IConfiguration>(config);
         services.AddWindowsFormsBlazorWebView();
 
         services.AddLrff13Services();

@@ -9,6 +9,9 @@
 @using Installer.Common.GameLocation
 @using Installer.Common.localization
 @using Installer.Common.Service
+@using System.Text.Json
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @inject IInfoProvider GameLocationProvider
 @inject IPackageInfo PackageInfo
 @inject InstallerServiceProvider InstallerServiceProvider
@@ -52,7 +55,7 @@
 @code {
     private readonly ILogger _logger = LogManager.GetLogger();
     private readonly string _appVersion = Application.ProductVersion;
-
+    private string _apiUrl;
     private string SpriteImage { get; set; } = "images/five.webp";
 
     private readonly IList<string> _spriteList = new List<string>(5)
@@ -83,10 +86,18 @@
         {
             try
             {
+                var settings = Configuration
+                    .GetSection("Settings")
+                    .Get<Dictionary<string, object>>();
+                string json = JsonSerializer.Serialize(settings);
+
+                var setting = JsonSerializer.Deserialize<Settings>(json);
+                string apiUrl = setting?.ApiUrl ?? InstallerServiceProvider.UriLrff13;
+                MessageBox.Show(setting.ApiUrl);
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
                 AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
 
-                AutoUpdater.Start(InstallerServiceProvider.UriLrff13);
+                AutoUpdater.Start(apiUrl);
                 AutoUpdater.RunUpdateAsAdmin = false;
 
                 await GetTranslationPackageUpdate();
