@@ -11,7 +11,8 @@ public sealed class GameFilesInserter : IGameFilesInserter
     private ILogger _logger = null!;
 
     private string _tempPath = string.Empty;
-    private string _crypt = string.Empty;
+    private string _cryptSys = string.Empty;
+    private string _cryptDlc = string.Empty;
     private string _msvcp100 = string.Empty;
     private string _msvcr100 = string.Empty;
 
@@ -19,30 +20,34 @@ public sealed class GameFilesInserter : IGameFilesInserter
     {
         _installerServiceProvider = installerServiceProvider;
     }
+
     public void Initializer(string tempPath)
     {
         _logger = LogManager.GetLogger();
 
         _tempPath = tempPath;
-        _crypt = Path.Combine(_installerServiceProvider.GameLocationInfo.SystemDirectory, "ffxiiicrypt.exe");
+        _cryptSys = Path.Combine(_installerServiceProvider.GameLocationInfo.SystemDirectory, "ffxiiicrypt.exe");
+        _cryptDlc = Path.Combine(_installerServiceProvider.GameLocationInfo.DlcDirectory, "ffxiiicrypt.exe");
         _msvcp100 = Path.Combine(_installerServiceProvider.GameLocationInfo.SystemDirectory, "msvcp100.dll");
         _msvcr100 = Path.Combine(_installerServiceProvider.GameLocationInfo.SystemDirectory, "msvcr100.dll");
 
-        File.Copy(sourceFileName: _tempPath + @"\ffxiiicrypt.exe", destFileName: _crypt, true);
+        File.Copy(sourceFileName: _tempPath + @"\ffxiiicrypt.exe", destFileName: _cryptSys, true);
+        File.Copy(sourceFileName: _tempPath + @"\ffxiiicrypt.exe", destFileName: _cryptDlc, true);
         File.Copy(_tempPath + @"\msvcp100.dll", destFileName: _msvcp100, overwrite: true);
         File.Copy(_tempPath + @"\msvcr100.dll", _msvcr100, true);
     }
 
-    public async Task Insert(string filelist, string whiteFile, string folder)
+    public async Task Insert(string filelist, string whiteFile, string folder, string workingDir)
     {
         var stdOutBuffer = new StringBuilder(capacity: 5000);
         var stdErrBuffer = new StringBuilder();
 
         _ = await Cli.Wrap(targetFilePath: _tempPath + @"\ff13tool.exe")
-            .WithArguments(configure: args =>
-                args.Add(value: "-i").Add(value: "-all").Add(value: "-ff133").Add(value: filelist).Add(value: whiteFile)
-                    .Add(value: Path.Combine(path1: _tempPath, path2: folder)))
-            .WithWorkingDirectory(workingDirPath: _installerServiceProvider.GameLocationInfo.SystemDirectory)
+            .WithArguments(configure: args => args
+                .Add(value: "-i").Add(value: "-all").Add(value: "-ff133")
+                .Add(value: filelist).Add(value: whiteFile)
+                .Add(value: Path.Combine(path1: _tempPath, path2: folder)))
+            .WithWorkingDirectory(workingDirPath: workingDir)
             .WithStandardOutputPipe(target: PipeTarget.ToStringBuilder(stringBuilder: stdOutBuffer))
             .WithStandardErrorPipe(target: PipeTarget.ToStringBuilder(stringBuilder: stdErrBuffer))
             .WithValidation(validation: CommandResultValidation.None)
@@ -63,8 +68,10 @@ public sealed class GameFilesInserter : IGameFilesInserter
         if (Directory.Exists(_tempPath))
             Directory.Delete(_tempPath, true);
 
-        if (File.Exists(_crypt))
-            File.Delete(_crypt);
+        if (File.Exists(_cryptSys))
+            File.Delete(_cryptSys);
+        if (File.Exists(_cryptDlc))
+            File.Delete(_cryptDlc);
         if (File.Exists(_msvcp100))
             File.Delete(_msvcp100);
         if (File.Exists(_msvcr100))

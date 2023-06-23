@@ -3,5 +3,5 @@
 public interface IGameFilesInserter : IDisposable
 {
     void Initializer(string tempPath);
-    Task Insert(string fileList, string whiteFile, string folder);
+    Task Insert(string fileList, string whiteFile, string folder, string workingDir);
 }

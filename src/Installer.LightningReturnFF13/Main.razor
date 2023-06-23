@@ -55,7 +55,7 @@
 @code {
     private readonly ILogger _logger = LogManager.GetLogger();
     private readonly string _appVersion = Application.ProductVersion;
-    private string _apiUrl;
+    private string _apiUrl = null!;
     private string SpriteImage { get; set; } = "images/five.webp";
 
     private readonly IList<string> _spriteList = new List<string>(5)
@@ -93,10 +93,9 @@
 
                 var setting = JsonSerializer.Deserialize<Settings>(json);
                 string apiUrl = setting?.ApiUrl ?? InstallerServiceProvider.UriLrff13;
-                MessageBox.Show(setting.ApiUrl);
+
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
                 AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-
                 AutoUpdater.Start(apiUrl);
                 AutoUpdater.RunUpdateAsAdmin = false;
 
@@ -119,7 +118,7 @@
             }
             catch (UnauthorizedAccessException accessException)
             {
-                var message = Localization.Localizer.Get("Exceptions.WriteFailed").ConvertLineBreaksToHtml();
+                string message = Localization.Localizer.Get("Exceptions.WriteFailed").ConvertLineBreaksToHtml();
                 _logger.Error(accessException, message);
 
                 var parameters = new DialogParameters
@@ -157,7 +156,7 @@
             case { IsValidMagic: false }:
                 await PackageInfo.DownloadTranslationPackage();
                 break;
-            case { IsValidId: false }:
+            case { IsValidHash: false }:
                 await PackageInfo.DownloadTranslationPackage();
                 break;
             case { IsExists: true, IsValidMagic: true, IsValidId: true, IsValidHash: true }:

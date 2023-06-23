@@ -71,7 +71,8 @@ public class PackageInfo : IPackageInfo {
     private bool CompareFileId(long value) {
         return _package.FileIsExists() && ReadFileId() >= value;
     }
-    private bool CompareToFileHash(string hashSource) {
+    private bool CompareToFileHash(string hashSource)
+    {
         if (!_package.FileIsExists()) return false;
 
         using Stream stream = TryOpen();
@@ -81,7 +82,7 @@ public class PackageInfo : IPackageInfo {
             byte[] bytes = sha256.ComputeHash(stream);
             string result = BitConverter.ToString(bytes).Replace("-", "");
 
-            return result.Equals(hashSource, StringComparison.Ordinal);
+            return result.Equals(hashSource, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

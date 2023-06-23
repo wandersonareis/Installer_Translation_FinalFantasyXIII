@@ -8,7 +8,7 @@ public static class ConvertersExt
         long.Parse(timestamp).ConvertFromUnixTimestamp(format);
 
     public static string ConvertFromUnixTimestamp(this long timestamp, string format = "dd-MM-yyyy") =>
-        timestamp < 1641006000 ?
+        timestamp <= 0 ?
             Localization.Localizer.Get("Warning.WithoutInstalledVersion") :
             DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime().ToString(format);
 }

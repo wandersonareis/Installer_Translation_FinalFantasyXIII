@@ -8,7 +8,7 @@ public interface IGameLocationInfo
     string RootDirectory { get; }
     string SystemDirectory { get; }
     string MovieDirectory { get; }
-    string UpdatesDirectory { get; }
+    string DlcDirectory { get; }
     string AreasDirectory { get; }
     string BackupDirectory { get; }
     string ExecutableRelativePath { get; }
@@ -23,7 +23,7 @@ public class GameLocationInfo : IGameLocationInfo
 
     public string SystemDirectory { get; }
     public string MovieDirectory { get; }
-    public string UpdatesDirectory { get; }
+    public string DlcDirectory { get; }
     public string AreasDirectory { get; }
     public string BackupDirectory { get; }
     public string ExecutableRelativePath => @"LRFF13.exe";
@@ -38,7 +38,7 @@ public class GameLocationInfo : IGameLocationInfo
         SystemDirectory = Path.Combine(resourcePath, "sys");
         MovieDirectory = Path.Combine(resourcePath, "movie");
         AreasDirectory = Path.Combine(resourcePath, "zone");
-        UpdatesDirectory = Path.Combine(resourcePath, "dlc");
+        DlcDirectory = Path.Combine(resourcePath, "dlc");
         BackupDirectory = Path.Combine(RootDirectory, "Backup");
     }
 
@@ -49,7 +49,7 @@ public class GameLocationInfo : IGameLocationInfo
         Exceptions.CheckDirectoryNotFoundException(SystemDirectory);
         Exceptions.CheckDirectoryNotFoundException(MovieDirectory);
         Exceptions.CheckDirectoryNotFoundException(AreasDirectory);
-        Exceptions.CheckDirectoryNotFoundException(UpdatesDirectory);
+        Exceptions.CheckDirectoryNotFoundException(DlcDirectory);
         Exceptions.CheckGameFileNotFoundException(ExecutablePath);
     }
 
