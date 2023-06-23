@@ -27,7 +27,7 @@
 
     private async Task Confirm() {
         try {
-            var (translationId, translationChangelog, appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
+            (long translationId, string translationChangelog, string appVersion) = await InstallerServiceProvider.GetJsonDataAsync();
 
             var parameters = new DialogParameters
                             {
