@@ -8,13 +8,13 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<IsShippingPackage>false</IsShippingPackage>
 		<StartupObject>Installer.LightningReturnFF13.Program</StartupObject>
-		<AssemblyName>LightningReturnFF13_pt-Br</AssemblyName>
+		<AssemblyName>[CentralDeTraducoes.net.br]LightningReturnFF13_PT-BR</AssemblyName>
 		<PlatformTarget>x64</PlatformTarget>
 		<ApplicationIcon>LR13.ico</ApplicationIcon>
 		<Authors>WandersonAReis</Authors>
-		<Version>2.1.5</Version>
-		<AssemblyVersion>2.1.5</AssemblyVersion>
-		<FileVersion>2.1.5</FileVersion>
+		<Version>2.1.6</Version>
+		<AssemblyVersion>2.1.6</AssemblyVersion>
+		<FileVersion>2.1.6</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -71,6 +71,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Shared\Classes\" />
 		<Folder Include="wwwroot\css" />
 	</ItemGroup>
 
