@@ -9,7 +9,7 @@ namespace Game.Injector;
 public sealed class GameFilesInserter : IGameFilesInserter
 {
     private readonly InstallerServiceProvider _installerServiceProvider;
-    private ILogger _logger = null!;
+    private readonly ILogger _logger;
 
     private string _tempPath = string.Empty;
     private string _cryptSys = string.Empty;
@@ -20,12 +20,11 @@ public sealed class GameFilesInserter : IGameFilesInserter
     public GameFilesInserter(InstallerServiceProvider installerServiceProvider)
     {
         _installerServiceProvider = installerServiceProvider;
+        _logger = LogManager.GetLogger();
     }
 
     public void Initializer(string tempPath)
     {
-        _logger = LogManager.GetLogger();
-
         _tempPath = tempPath;
         _cryptSys = Path.Combine(_installerServiceProvider.GameLocationInfo.SystemDirectory, "ffxiiicrypt.exe");
         _cryptDlc = Path.Combine(_installerServiceProvider.GameLocationInfo.DlcDirectory, "ffxiiicrypt.exe");
@@ -43,7 +42,7 @@ public sealed class GameFilesInserter : IGameFilesInserter
         var stdOutBuffer = new StringBuilder(capacity: 5000);
         var stdErrBuffer = new StringBuilder();
 
-        _ = await Cli.Wrap(targetFilePath: _tempPath + @"\ff13tool.exe")
+        CommandTask<CommandResult> commandTask = Cli.Wrap(targetFilePath: _tempPath + @"\ff13tool.exe")
             .WithArguments(configure: args => args
                 .Add(value: "-i").Add(value: "-all").Add(value: "-ff133")
                 .Add(value: filelist).Add(value: whiteFile)
@@ -54,6 +53,7 @@ public sealed class GameFilesInserter : IGameFilesInserter
             .WithValidation(validation: CommandResultValidation.None)
             .ExecuteAsync();
 
+        await commandTask;
 
         if (stdOutBuffer.Length > 0) _logger.Info(stdOutBuffer.ToString());
 

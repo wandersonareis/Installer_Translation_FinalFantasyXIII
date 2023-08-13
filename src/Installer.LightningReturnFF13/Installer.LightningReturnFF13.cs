@@ -76,7 +76,9 @@ public partial class LightningReturnFf13 : Form
             CreateFile(resStream, dir);
         }
 
-        void CreateFile(Stream resStream, string dir)
+        return;
+
+        static void CreateFile(Stream resStream, string dir)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(dir)!);
 
