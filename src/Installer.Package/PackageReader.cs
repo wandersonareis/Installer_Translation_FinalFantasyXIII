@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Installer.Common.Framework;
+using Installer.Common.localization;
 using Installer.Common.Service;
 using ZstdSharp;
 
@@ -22,7 +23,7 @@ public sealed class PackageReader : IPackageReader
         string patchDirectory = _installerServiceProvider.PatchDirectory;
         string gameLocation = _installerServiceProvider.GameLocationInfo.SystemDirectory;
 
-        await using (FileStream stream = File.OpenRead(_installerServiceProvider.ResourcesFile))
+        await using (FileStream stream = File.OpenRead(_installerServiceProvider.ResourcesFileProvider))
         using (BinaryReader br = new(stream))
         {
             br.ReadBytes(16);
@@ -41,7 +42,7 @@ public sealed class PackageReader : IPackageReader
 
                 bool isCompressed = br.ReadBoolean();
 
-                progress.Title = _installerServiceProvider.ExtractingPackageFiles(i + 1, fileCount);
+                progress.Title = ExtractingPackageFiles(i + 1, fileCount);
 
                 if (isCompressed)
                 {
@@ -56,5 +57,8 @@ public sealed class PackageReader : IPackageReader
         }
         progress.Finish();
         return patchDirectory;
+
+        static string ExtractingPackageFiles(int fileCount, int total) =>
+            string.Format(Localization.Localizer.Get("Messages.ExtractingPackageFiles"), fileCount, total);
     }
 }

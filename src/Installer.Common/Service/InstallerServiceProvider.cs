@@ -11,7 +11,16 @@ public class InstallerServiceProvider : InstallerBase
     public IGameLocationInfo GameLocationInfo;
     public IPersistenceRegisterProvider PersistenceRegister;
 
-    public readonly string ResourcesFile;
+    public string ResourcesFileProvider
+    {
+        get
+        {
+            Directory.CreateDirectory("./Resources");
+            return Directory.GetFiles(ResourcesDirectory, $"*{PackageRelatieFileName}")
+                .FirstOrDefault(Path.Combine(ResourcesDirectory, PackageRelatieFileName));
+        }
+    }
+
     public string UriLrff13 => DataUriLrff13;
     public JsonData JsonDataSync => GetJsonDataAsync().GetAwaiter().GetResult();
 
@@ -19,10 +28,35 @@ public class InstallerServiceProvider : InstallerBase
     {
         PersistenceRegister = persistenceRegister;
         GameLocationInfo = new GameLocationInfo(persistenceRegister.GetGamePath());
-        ResourcesFile = Path.Combine(AppDirectory, "Resources", PackageFileName);
     }
 
-    public async Task<JsonData> GetJsonDataAsync() => await DownloaderManager.GetApiJsonAsync(DataUriLrff13);
+    public GameSysFiles[] FilesListLrff13 => FilesLrff13;
+    public IEnumerable<GameSysFiles> DlcFilesLrff13 => DlcLrff13
+        .Select(i =>
+        {
+            string fileList = Path.Combine(GameLocationInfo.DlcDirectory, i.FileList);
+            string whiteFile = Path.Combine(GameLocationInfo.DlcDirectory, i.WhiteFile);
 
-    public string ExtractingPackageFiles(int fileCount, int total) => string.Format(Localization.Localizer.Get("Messages.ExtractingPackageFiles"), fileCount, total);
+            return new GameSysFiles
+            {
+                FileList = fileList,
+                WhiteFile = whiteFile,
+                FileFolder = "white_imga"
+            };
+        })
+        .Where(x => File.Exists(x.FileList) && File.Exists(x.WhiteFile))
+        .Select(file =>
+        {
+            string fileList = Path.GetRelativePath(GameLocationInfo.DlcDirectory, file.FileList);
+            string whiteFile = Path.GetRelativePath(GameLocationInfo.DlcDirectory, file.WhiteFile);
+
+            return new GameSysFiles
+            {
+                FileList = fileList,
+                WhiteFile = whiteFile,
+                FileFolder = file.FileFolder
+            };
+        });
+
+    public async Task<JsonData> GetJsonDataAsync() => await DownloaderManager.GetApiJsonAsync(DataUriLrff13);
 }

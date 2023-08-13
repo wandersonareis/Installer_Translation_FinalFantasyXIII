@@ -1,21 +1,22 @@
-﻿using System.Reflection;
-using Installer.Common.Models;
+﻿using Installer.Common.Models;
 
 namespace Installer.Common.Abstract;
 
 public abstract class InstallerBase
 {
-    public const string MessageTitle = "Lightning Return FF13 pt-BR";
+    public const string MessageTitle = "Lightning Return FF13 PT-BR";
     public const int SteamGameId = 345350;
-    protected const string PackageFileName = "[tribogamer.com]_Lightning_Return_FF13.bin";
+    //protected const string PackageFileName = "[CentralDeTraducoes.net.br]Lightning_Return_FF13.bin";
+    protected const string PackageRelatieFileName = "Lightning_Return_FF13.bin";
 
     protected const string DataUriLrff13 = "https://api.npoint.io/b7fa9dd201b5e145b492";
 
-    private protected readonly string AppDirectory = AppDomain.CurrentDomain.BaseDirectory;
+    private protected string AppDirectory => AppDomain.CurrentDomain.BaseDirectory;
+    private protected string ResourcesDirectory => Path.Combine(AppDirectory, "Resources");
 
     public string PatchDirectory { get; } = Path.GetTempPath() + Guid.NewGuid();
 
-    public IList<GameSysFiles> FilesListLrff13 => new List<GameSysFiles>(4)
+    protected GameSysFiles[] FilesLrff13 =
     {
         new()
         {
@@ -39,7 +40,22 @@ public abstract class InstallerBase
         }
     };
 
-    public bool CheckAppVersion(string serverVersion) => Assembly.GetExecutingAssembly().GetName().Version >= new Version(version: serverVersion);
+    protected IEnumerable<GameSysFiles> DlcLrff13 => Enumerable.Range(1, 15)
+        .Select(i =>
+        {
+            var directoryName = $"{i:D7}";
+            string fileList = Path.Combine(directoryName,
+                $"filelist_p{directoryName}img_a.win32.bin");
+            string whiteFile = Path.Combine(directoryName,
+                $"white_p{directoryName}img_a.win32.bin");
+
+            return new GameSysFiles
+            {
+                FileList = fileList,
+                WhiteFile = whiteFile,
+                FileFolder = "white_imga"
+            };
+        });
 
     public void MoveFiles(string source, string des) => File.Move(sourceFileName: source, destFileName: des, overwrite: true);
 

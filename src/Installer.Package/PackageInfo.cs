@@ -17,7 +17,7 @@ public class PackageInfo : IPackageInfo {
 
     public PackageInfo(InstallerServiceProvider installerServiceProvider) {
         _installerServiceProvider = installerServiceProvider;
-        _package = _installerServiceProvider.ResourcesFile;
+        _package = _installerServiceProvider.ResourcesFileProvider;
     }
 
     public async ValueTask Check() {
@@ -43,7 +43,7 @@ public class PackageInfo : IPackageInfo {
         }
 
         _ = Directory.CreateDirectory(@".\Resources");
-        await DownloaderManager.DoUpdateAsync(translationUrl, _installerServiceProvider.ResourcesFile);
+        await DownloaderManager.DoUpdateAsync(translationUrl, _package);
 
         _installerServiceProvider.PersistenceRegister.SetInstalledTranslation(translationId);
     }

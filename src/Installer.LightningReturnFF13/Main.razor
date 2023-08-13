@@ -54,8 +54,7 @@
 
 @code {
     private readonly ILogger _logger = LogManager.GetLogger();
-    private readonly string _appVersion = Application.ProductVersion;
-    private string _apiUrl = null!;
+    private readonly string _appVersion = Application.ProductVersion.Split('+')[0];
     private string SpriteImage { get; set; } = "images/five.webp";
 
     private readonly IList<string> _spriteList = new List<string>(5)
@@ -94,6 +93,7 @@
                 var setting = JsonSerializer.Deserialize<Settings>(json);
                 string apiUrl = setting?.ApiUrl ?? InstallerServiceProvider.UriLrff13;
 
+                AutoUpdater.ExecutablePath = "[CentralDeTraducoes.net.br]LightningReturnFF13_PT-BR.exe";
                 AutoUpdater.ParseUpdateInfoEvent += AutoUpdaterOnParseUpdateInfoEvent;
                 AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
                 AutoUpdater.Start(apiUrl);
