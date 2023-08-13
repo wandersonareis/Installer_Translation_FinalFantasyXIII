@@ -4,12 +4,12 @@ using Installer.Common.localization;
 
 namespace Installer.Common.Framework;
 
-public static class Exceptions
+public static class CustomExceptions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T CheckArgumentNull<T>(T arg, string name) where T : class
     {
-        return ReferenceEquals(arg, null) ? throw new ArgumentNullException(name) : arg;
+        return arg is null ? throw new ArgumentNullException(name) : arg;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -26,7 +26,7 @@ public static class Exceptions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T CheckArgumentNullOrEmpty<T>(T arg, string name) where T : IList
     {
-        if (ReferenceEquals(arg, null))
+        if (arg is null)
             throw new ArgumentNullException(name);
         if (arg.Count == 0)
             throw new ArgumentEmptyException(name);

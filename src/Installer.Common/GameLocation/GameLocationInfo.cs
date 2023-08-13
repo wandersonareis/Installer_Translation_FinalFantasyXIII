@@ -46,11 +46,11 @@ public class GameLocationInfo : IGameLocationInfo
 
     public void Validate()
     {
-        Exceptions.CheckDirectoryNotFoundException(SystemDirectory);
-        Exceptions.CheckDirectoryNotFoundException(MovieDirectory);
-        Exceptions.CheckDirectoryNotFoundException(AreasDirectory);
-        Exceptions.CheckDirectoryNotFoundException(DlcDirectory);
-        Exceptions.CheckGameFileNotFoundException(ExecutablePath);
+        CustomExceptions.CheckDirectoryNotFoundException(SystemDirectory);
+        CustomExceptions.CheckDirectoryNotFoundException(MovieDirectory);
+        CustomExceptions.CheckDirectoryNotFoundException(AreasDirectory);
+        CustomExceptions.CheckDirectoryNotFoundException(DlcDirectory);
+        CustomExceptions.CheckGameFileNotFoundException(ExecutablePath);
     }
 
     public bool IsValidGamePath()

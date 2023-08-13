@@ -29,8 +29,8 @@ public class PackageInfo : IPackageInfo {
     }
 
     public void Validate() {
-        Exceptions.CheckPackageFileNotFoundException(_package);
-        Exceptions.WrongMagicException(_installerServiceProvider.ResourcesFile);
+        CustomExceptions.CheckPackageFileNotFoundException(_package);
+        CustomExceptions.WrongMagicException(_installerServiceProvider.ResourcesFileProvider);
     }
 
     public async Task DownloadTranslationPackage() {
@@ -56,7 +56,7 @@ public class PackageInfo : IPackageInfo {
     }
 
     private Stream TryOpen() {
-        Exceptions.CheckPackageFileNotFoundException(_package);
+        CustomExceptions.CheckPackageFileNotFoundException(_package);
         return new FileStream(_package, FileMode.Open, FileAccess.Read);
     }
 
