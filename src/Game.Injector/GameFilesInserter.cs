@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using CliWrap;
+using Installer.Common.Framework.Extensions;
 using Installer.Common.Logger;
 using Installer.Common.Service;
 
@@ -66,18 +67,15 @@ public sealed class GameFilesInserter : IGameFilesInserter
     public void Dispose()
     {
         if (Directory.Exists(_tempPath))
-            Directory.Delete(_tempPath, true);
+            _tempPath.DeleteEvenWhenUsed();
 
         if (File.Exists(_cryptSys))
-            File.Delete(_cryptSys);
+            _cryptSys.DeleteEvenWhenUsed();
         if (File.Exists(_cryptDlc))
-            File.Delete(_cryptDlc);
+            _cryptDlc.DeleteEvenWhenUsed();
         if (File.Exists(_msvcp100))
-            File.Delete(_msvcp100);
+            _msvcp100.DeleteEvenWhenUsed();
         if (File.Exists(_msvcr100))
-            File.Delete(_msvcr100);
+            _msvcr100.DeleteEvenWhenUsed();
     }
-
-    //[GeneratedRegex(@"\b(\d+)\b", RegexOptions.IgnoreCase | RegexOptions.Compiled)]
-    //public static partial Regex GetNumbersRegex();
 }

@@ -1,6 +1,6 @@
 ﻿namespace Installer.Common.Framework.Extensions;
 
-public static class FileIoExt
+public static class IoExt
 {
     public static async Task CopyToAsync(this string source, string destination)
     {
