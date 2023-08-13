@@ -5,11 +5,16 @@ VisualStudioVersion = 17.5.33209.295
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Installer.LightningReturnFF13", "src\Installer.LightningReturnFF13\Installer.LightningReturnFF13.csproj", "{D7FF06D9-091D-4F3D-9473-A1AE2F903E74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer.Package", "src\Installer.Package\Installer.Package.csproj", "{27F115B6-8125-4FD9-96EF-6FAE06452CC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Installer.Package", "src\Installer.Package\Installer.Package.csproj", "{27F115B6-8125-4FD9-96EF-6FAE06452CC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer.Common", "src\Installer.Common\Installer.Common.csproj", "{37114C1C-F44C-465F-A03A-C94A9D3B6441}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Installer.Common", "src\Installer.Common\Installer.Common.csproj", "{37114C1C-F44C-465F-A03A-C94A9D3B6441}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game.Injector", "src\Game.Injector\Game.Injector.csproj", "{95EEB09A-08B4-4498-A9B8-E1CEAF180713}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Injector", "src\Game.Injector\Game.Injector.csproj", "{95EEB09A-08B4-4498-A9B8-E1CEAF180713}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D999F57C-9EF5-423A-83AB-65AA4B4E9718}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
