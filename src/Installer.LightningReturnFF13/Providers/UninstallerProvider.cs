@@ -8,7 +8,7 @@ using Installer.Common.Service;
 using Installer.LightningReturnFF13.Shared.Interfaces;
 using MudBlazor;
 
-namespace Installer.LightningReturnFF13.Shared.Classes;
+namespace Installer.LightningReturnFF13.Providers;
 
 public class UninstallerProvider : IUninstallerProvider
 {
