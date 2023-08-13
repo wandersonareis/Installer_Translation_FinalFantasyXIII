@@ -2,7 +2,7 @@ using Game.Injector;
 using Installer.Common;
 using Installer.Common.GameLocation;
 using Installer.Common.Service;
-using Installer.LightningReturnFF13.Shared.Classes;
+using Installer.LightningReturnFF13.Providers;
 using Installer.LightningReturnFF13.Shared.Framework;
 using Installer.LightningReturnFF13.Shared.GameLocation;
 using Installer.LightningReturnFF13.Shared.Interfaces;
@@ -19,7 +19,7 @@ public static class InstallerServices
             .AddSingleton<InstallerServiceProvider>()
             .AddTransient<IPersistenceRegisterProvider, RegistryPersistenceProvider>()
             .AddTransient<IFolderBrowserService, FolderPicker>()
-            .AddTransient<ITranslationIntaller, Shared.Classes.Installer>()
+            .AddTransient<ITranslationIntaller, InstallerProvider>()
             .AddTransient<IGameFilesInserter, GameFilesInserter>()
             .AddTransient<IUninstallerProvider, UninstallerProvider>()
             .AddTransient<IPackageInfo, PackageInfo>()
